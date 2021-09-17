@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QMainWindow>
+#include <customtabwidget.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -13,8 +14,9 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     void modifyWindowTitle();
-    bool SaveAs();
-    bool Save();
+    void SaveAs();
+    void Save();
+    void setSaveState(bool state);
     ~MainWindow();
 
 private slots:
@@ -34,6 +36,9 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+//    CustomTabWidget *tabWidget;
+//    QVBoxLayout *layout;
     QString currentFileName;
     QString currentFilePath;
+    bool _savestate{true};
 };
