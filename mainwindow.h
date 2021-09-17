@@ -1,7 +1,6 @@
 #pragma once
 
 #include <QMainWindow>
-#include <customtabwidget.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

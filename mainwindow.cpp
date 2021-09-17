@@ -13,10 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-   // tabWidget = new CustomTabWidget(this);
     ui->tabWidget->removeTab(1);
-//    layout = new QVBoxLayout(tabWidget);
-//    setLayout(layout);
 }
 
 void MainWindow::modifyWindowTitle()
