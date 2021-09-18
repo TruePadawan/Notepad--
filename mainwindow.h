@@ -19,7 +19,8 @@ public:
     int newTab();
     void SaveAs();
     void Save();
-    void setSaveState(bool state);
+    void setSaveState(bool state, int index);
+    void checkSaveState();
     ~MainWindow();
 
 private slots:
@@ -66,8 +67,10 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QList<FileInstance> fileInstances;
+    QList<bool> saveStates;
     QString currentFileName;
     QString currentFilePath;
     QTextEdit *currentTextEdit;
+    int currentTabIndex;
     bool _savestate{true};
 };
