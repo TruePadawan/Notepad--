@@ -7,6 +7,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QChar>
+#include <QVBoxLayout>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -14,16 +15,49 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     ui->tabWidget->removeTab(1);
+    ui->tabWidget->setMovable(true);
+    ui->tabWidget->setTabText(0,"Untitled");
+
+    // ADD A FILE INSTANCE FOR THE DEFAULT TAB
+    FileInstance defaultTab{currentFileName,currentFilePath};
+    fileInstances.append(defaultTab);
+
+    currentTextEdit = ui->textEdit;
+
+    connect(currentTextEdit, &QTextEdit::undoAvailable, [=] (bool val){
+        ui->actionUndo->setEnabled(val);
+    });
+
+    connect(currentTextEdit, &QTextEdit::redoAvailable, [=] (bool val){
+        ui->actionRedo->setEnabled(val);
+    });
+
+    connect(currentTextEdit, &QTextEdit::copyAvailable, [=] (bool val){
+        ui->actionCopy->setEnabled(val);
+    });
 }
 
 void MainWindow::modifyWindowTitle()
 {
-    if (!currentFileName.isEmpty())
+    if (!currentFilePath.isEmpty())
     {
-        QString title{"Notepad--["};
-        title.append(currentFileName).append("]");
+        QString title{"Notepad-- ["};
+        title.append(currentFilePath).append("]");
         setWindowTitle(title);
+        ui->tabWidget->setTabText(ui->tabWidget->currentIndex(),currentFileName);
     }
+}
+
+int MainWindow::newTab()
+{
+    QWidget *page = new QWidget;
+    QTextEdit *textarea = new QTextEdit(page);
+
+    QVBoxLayout *layout = new QVBoxLayout;
+    layout->addWidget(textarea);
+    page->setLayout(layout);
+
+    return ui->tabWidget->addTab(page,"Untitled");
 }
 
 void MainWindow::SaveAs()
@@ -37,7 +71,7 @@ void MainWindow::SaveAs()
     }
 
     QTextStream stream{&file};
-    stream << ui->textEdit->toPlainText();
+    stream << currentTextEdit->toPlainText();
     file.close();
 
     QFileInfo fileinfo{savename};
@@ -59,9 +93,10 @@ void MainWindow::Save()
             return;
         }
         QTextStream stream{&file};
-        stream << ui->textEdit->toPlainText();
+        stream << currentTextEdit->toPlainText();
         file.close();
-        setWindowTitle(windowTitle().sliced(1));
+        //setWindowTitle(windowTitle().sliced(1));
+        setWindowTitle(windowTitle().remove('*'));
         setSaveState(true);
     }else
     {
@@ -88,7 +123,8 @@ void MainWindow::setSaveState(bool state)
 
         ui->actionSave_File->setEnabled(false);
         ui->actionSave_As->setEnabled(false);
-
+        ui->actionSave->setEnabled(false);
+        ui->actionSave_As_2->setEnabled(false);
 
     }
 }
@@ -96,12 +132,13 @@ void MainWindow::setSaveState(bool state)
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete currentTextEdit;
 }
 
 
 void MainWindow::on_actionNew_File_triggered()
 {
-    if (!ui->textEdit->toPlainText().isEmpty() && _savestate == false)
+    if (!currentTextEdit->toPlainText().isEmpty() && _savestate == false)
     {
         auto decision = QMessageBox::question(this,"Confirmation","Are you sure you want to discard the current file before saving?",QMessageBox::Yes,QMessageBox::No);
         if (decision != QMessageBox::Yes)
@@ -110,7 +147,8 @@ void MainWindow::on_actionNew_File_triggered()
         }
 
     }
-    ui->textEdit->setText("");
+    auto val = newTab();
+    qDebug() << val;
 }
 
 
@@ -139,17 +177,25 @@ void MainWindow::on_actionOpen_File_triggered()
             qWarning() << file.errorString();
             return;
         }
+
+        int index = newTab();
+        ui->tabWidget->setCurrentIndex(index);
+
         // STORE THE NAME AND PATH OF THE CURRENT FILE IN A VARIABLE
         QFileInfo info{filepath};
         currentFileName = info.fileName();
         currentFilePath = filepath;
+        fileInstances[ui->tabWidget->currentIndex()].setName_and_Path(currentFileName,currentFilePath);
+
+        currentTextEdit = qobject_cast<QTextEdit *>(ui->tabWidget->currentWidget());
 
         QTextStream stream{&file};
-        ui->textEdit->clear();
         while (!stream.atEnd())
         {
-            ui->textEdit->append(stream.readLine());
+            currentTextEdit->append(stream.readLine());
+            //ui->textEdit->append(stream.readLine());
         }
+        qDebug() << "Pass";
         // APPEND THE FILENAME TO THE TITLE OF THE WINDOW
         modifyWindowTitle();
         _savestate = true;
@@ -166,9 +212,10 @@ void MainWindow::on_textEdit_textChanged()
         setWindowTitle(windowTitle().prepend("*"));
     }
 
-    if (windowTitle() == "*Notepad--" && ui->textEdit->toPlainText().isEmpty())
+    if (windowTitle() == "*Notepad--" && currentTextEdit->toPlainText().isEmpty())
     {
-        setWindowTitle(windowTitle().sliced(1));
+        //setWindowTitle(windowTitle().sliced(1));
+        setWindowTitle(windowTitle().remove('*'));
         setSaveState(true);
     }
 }
@@ -202,12 +249,94 @@ void MainWindow::on_actionClose_File_triggered()
         if (decision == QMessageBox::Yes)
         {
             setWindowTitle("Notepad--");
-            ui->textEdit->clear();
+            currentTextEdit->clear();
+            //ui->textEdit->clear();
         }
     }else
     {
         setWindowTitle("Notepad--");
-        ui->textEdit->clear();
+        currentTextEdit->clear();
+        //ui->textEdit->clear();
     }
+    currentFileName = "";
+    currentFilePath = "";
+    ui->tabWidget->setTabText(ui->tabWidget->currentIndex(),"Untitled");
+}
+
+void MainWindow::on_actionAbout_Qt_triggered()
+{
+    QMessageBox::aboutQt(this);
+}
+
+
+void MainWindow::on_actionNew_File_2_triggered()
+{
+    on_actionNew_File_triggered();
+}
+
+
+void MainWindow::on_tabWidget_currentChanged(int index)
+{
+    currentTextEdit = qobject_cast<QTextEdit *>(ui->tabWidget->widget(index));
+}
+
+
+void MainWindow::on_actionOpen_File_2_triggered()
+{
+    on_actionOpen_File_triggered();
+}
+
+
+void MainWindow::on_actionSave_triggered()
+{
+    on_actionSave_File_triggered();
+}
+
+
+void MainWindow::on_actionSave_As_2_triggered()
+{
+    on_actionSave_As_triggered();
+}
+
+
+void MainWindow::on_actionClose_File_2_triggered()
+{
+    on_actionClose_File_triggered();
+}
+
+
+void MainWindow::on_actionExit_2_triggered()
+{
+    on_actionExit_triggered();
+}
+
+
+void MainWindow::on_actionUndo_triggered()
+{
+    currentTextEdit->undo();
+}
+
+
+void MainWindow::on_actionRedo_triggered()
+{
+    currentTextEdit->redo();
+}
+
+
+void MainWindow::on_actionCut_triggered()
+{
+    currentTextEdit->cut();
+}
+
+
+void MainWindow::on_actionCopy_triggered()
+{
+    currentTextEdit->copy();
+}
+
+
+void MainWindow::on_actionPaste_triggered()
+{
+    currentTextEdit->paste();
 }
 

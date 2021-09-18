@@ -1,6 +1,9 @@
 #pragma once
 
 #include <QMainWindow>
+#include <QList>
+#include <QTextEdit>
+#include <fileinstance.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -13,6 +16,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     void modifyWindowTitle();
+    int newTab();
     void SaveAs();
     void Save();
     void setSaveState(bool state);
@@ -33,11 +37,37 @@ private slots:
 
     void on_actionClose_File_triggered();
 
+    void on_actionAbout_Qt_triggered();
+
+    void on_actionNew_File_2_triggered();
+
+    void on_tabWidget_currentChanged(int index);
+
+    void on_actionOpen_File_2_triggered();
+
+    void on_actionSave_triggered();
+
+    void on_actionSave_As_2_triggered();
+
+    void on_actionClose_File_2_triggered();
+
+    void on_actionExit_2_triggered();
+
+    void on_actionUndo_triggered();
+
+    void on_actionRedo_triggered();
+
+    void on_actionCut_triggered();
+
+    void on_actionCopy_triggered();
+
+    void on_actionPaste_triggered();
+
 private:
     Ui::MainWindow *ui;
-//    CustomTabWidget *tabWidget;
-//    QVBoxLayout *layout;
+    QList<FileInstance> fileInstances;
     QString currentFileName;
     QString currentFilePath;
+    QTextEdit *currentTextEdit;
     bool _savestate{true};
 };
