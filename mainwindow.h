@@ -21,6 +21,7 @@ public:
     void Save();
     void setSaveState(bool state, int index);
     void checkSaveState();
+    bool allSaved();
     ~MainWindow();
 
 private slots:
@@ -71,6 +72,6 @@ private:
     QString currentFileName;
     QString currentFilePath;
     QTextEdit *currentTextEdit;
-    int currentTabIndex;
+    int currentTabIndex{0};
     bool _savestate{true};
 };

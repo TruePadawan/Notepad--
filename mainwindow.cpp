@@ -40,6 +40,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(currentTextEdit, &QTextEdit::copyAvailable, [=] (bool val){
         ui->actionCopy->setEnabled(val);
     });
+
+    connect(currentTextEdit, &QTextEdit::textChanged, this, &MainWindow::on_textEdit_textChanged);
 }
 
 void MainWindow::modifyWindowTitle()
@@ -50,6 +52,9 @@ void MainWindow::modifyWindowTitle()
         title.append(currentFilePath).append("]");
         setWindowTitle(title);
         ui->tabWidget->setTabText(ui->tabWidget->currentIndex(),currentFileName);
+    }else
+    {
+        setWindowTitle("Notepad--");
     }
 }
 
@@ -91,8 +96,10 @@ void MainWindow::SaveAs()
 
     modifyWindowTitle();
 
-    FileInstance newlySaved{currentFileName,currentFilePath};
-    fileInstances.insert(ui->tabWidget->currentIndex(),newlySaved);
+//    FileInstance newlySaved{currentFileName,currentFilePath};
+//    fileInstances.insert(ui->tabWidget->currentIndex(),newlySaved);
+    fileInstances[currentTabIndex].setName_and_Path(currentFileName,currentFilePath);
+    fileInstances[currentTabIndex].setSaveState(true);
 
     //setSaveState(true, ui->tabWidget->currentIndex());
     checkSaveState();
@@ -113,7 +120,8 @@ void MainWindow::Save()
         file.close();
         //setWindowTitle(windowTitle().sliced(1));
         setWindowTitle(windowTitle().remove('*'));
-        setSaveState(true, ui->tabWidget->currentIndex());
+        //setSaveState(true, ui->tabWidget->currentIndex());
+        fileInstances[currentTabIndex].setSaveState(true);
     }else
     {
         SaveAs();
@@ -149,6 +157,15 @@ void MainWindow::checkSaveState()
     }
 }
 
+bool MainWindow::allSaved()
+{
+    foreach (FileInstance tmp, fileInstances) {
+        if (!tmp.getSaveState())
+            return false;
+    }
+    return true;
+}
+
 MainWindow::~MainWindow()
 {
     delete ui;
@@ -158,18 +175,18 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionNew_File_triggered()
 {
-    if (!currentTextEdit->toPlainText().isEmpty() && _savestate == false)
-    {
-        auto decision = QMessageBox::question(this,"Confirmation","Are you sure you want to discard the current file before saving?",QMessageBox::Yes,QMessageBox::No);
-        if (decision != QMessageBox::Yes)
-        {
-            return;
-        }
+//    if (!currentTextEdit->toPlainText().isEmpty() && _savestate == false)
+//    {
+//        auto decision = QMessageBox::question(this,"Confirmation","Are you sure you want to discard the current file before saving?",QMessageBox::Yes,QMessageBox::No);
+//        if (decision != QMessageBox::Yes)
+//        {
+//            return;
+//        }
 
-    }
+//    }
     auto tab = newTab();
-    FileInstance newlyCreated{};
-    fileInstances.insert(ui->tabWidget->currentIndex()+1,newlyCreated);
+//    FileInstance newlyCreated{};
+//    fileInstances.insert(ui->tabWidget->currentIndex()+1,newlyCreated);
 
     ui->tabWidget->setCurrentIndex(tab);
 
@@ -178,9 +195,9 @@ void MainWindow::on_actionNew_File_triggered()
 
 void MainWindow::on_actionExit_triggered()
 {
-    if (_savestate == false)
+    if (!allSaved())
     {
-        auto decision = QMessageBox::question(this,"Exit","Are you sure you want to exit before saving?",QMessageBox::Yes,QMessageBox::No);
+        auto decision = QMessageBox::question(this,"Exit","Some files have not been saved, Are you sure you want to exit?",QMessageBox::Yes,QMessageBox::No);
         if (decision == QMessageBox::Yes)
         {
             close();
@@ -217,8 +234,9 @@ void MainWindow::on_actionOpen_File_triggered()
         }
         //fileInstances[ui->tabWidget->currentIndex()].setName_and_Path(currentFileName,currentFilePath);
 
-        currentTextEdit = qobject_cast<QTextEdit *>(ui->tabWidget->currentWidget());
-
+        //currentTextEdit = qobject_cast<QTextEdit *>(ui->tabWidget->currentWidget());
+        currentTextEdit = ui->tabWidget->widget(index)->findChild<QTextEdit *>();
+        qDebug() << "Pass";
         QTextStream stream{&file};
         while (!stream.atEnd())
         {
@@ -228,7 +246,7 @@ void MainWindow::on_actionOpen_File_triggered()
         qDebug() << "Pass";
         // APPEND THE FILENAME TO THE TITLE OF THE WINDOW
         modifyWindowTitle();
-        _savestate = true;
+        //_savestate = true;
         file.close();
     }
 }
@@ -236,7 +254,8 @@ void MainWindow::on_actionOpen_File_triggered()
 
 void MainWindow::on_textEdit_textChanged()
 {
-    setSaveState(false, ui->tabWidget->currentIndex());
+    //setSaveState(false, ui->tabWidget->currentIndex());
+    fileInstances[currentTabIndex].setSaveState(false);
     if (windowTitle().at(0) != '*')
     {
         setWindowTitle(windowTitle().prepend("*"));
@@ -246,14 +265,16 @@ void MainWindow::on_textEdit_textChanged()
     {
         //setWindowTitle(windowTitle().sliced(1));
         setWindowTitle(windowTitle().remove('*'));
-        setSaveState(true, ui->tabWidget->currentIndex());
+        //setSaveState(true, ui->tabWidget->currentIndex());
+        fileInstances[currentTabIndex].setSaveState(true);
     }
+    checkSaveState();
 }
 
 
 void MainWindow::on_actionSave_File_triggered()
 {
-    if (_savestate == false)
+    if (fileInstances[currentTabIndex].getSaveState() == false)
     {
         if (windowTitle() == "*Notepad--")
         {
@@ -273,7 +294,7 @@ void MainWindow::on_actionSave_As_triggered()
 
 void MainWindow::on_actionClose_File_triggered()
 {
-    if (_savestate == false)
+    if (!fileInstances[currentTabIndex].getSaveState())
     {
         auto decision = QMessageBox::question(this,"Confirmation","Are you sure you want to close the current file before saving?",QMessageBox::Yes,QMessageBox::No);
         if (decision == QMessageBox::Yes)
@@ -308,7 +329,7 @@ void MainWindow::on_actionNew_File_2_triggered()
 void MainWindow::on_tabWidget_currentChanged(int index)
 {
     currentTabIndex = index;
-    _savestate = saveStates[index];
+    _savestate = fileInstances[index].getSaveState();
     currentFileName = fileInstances[index].getFileName();
     currentFilePath = fileInstances[index].getFilePath();
     qDebug() << "Filename : " << currentFileName;
@@ -317,6 +338,7 @@ void MainWindow::on_tabWidget_currentChanged(int index)
     modifyWindowTitle();
     checkSaveState();
     currentTextEdit = qobject_cast<QTextEdit *>(ui->tabWidget->widget(index));
+    //currentTextEdit = ui->tabWidget->widget(index)->findChild<QTextEdit *>();
 }
 
 
