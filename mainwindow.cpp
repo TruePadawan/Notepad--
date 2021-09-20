@@ -109,6 +109,7 @@ void MainWindow::Save()
         setWindowTitle(windowTitle().remove('*'));
         //setSaveState(true, ui->tabWidget->currentIndex());
         fileInstances[currentTabIndex].setSaveState(true);
+        checkSaveState();
     }else
     {
         SaveAs();
@@ -234,23 +235,25 @@ void MainWindow::on_actionOpen_File_triggered()
 
         if (!fileInstances.contains(newFile))
         {
-            fileInstances.insert(ui->tabWidget->currentIndex(),newFile);
+            fileInstances.append(newFile);
+            currentTextEdit = ui->tabWidget->widget(index)->findChild<QTextEdit *>();
+            qDebug() << "Pass";
+            QTextStream stream{&file};
+            while (!stream.atEnd())
+            {
+                currentTextEdit->append(stream.readLine());
+                //ui->textEdit->append(stream.readLine());
+            }
+            qDebug() << "Pass";
+            // APPEND THE FILENAME TO THE TITLE OF THE WINDOW
+            modifyWindowTitle();
         }
-        //fileInstances[ui->tabWidget->currentIndex()].setName_and_Path(currentFileName,currentFilePath);
-
-        //currentTextEdit = qobject_cast<QTextEdit *>(ui->tabWidget->currentWidget());
-        currentTextEdit = ui->tabWidget->widget(index)->findChild<QTextEdit *>();
-        qDebug() << "Pass";
-        QTextStream stream{&file};
-        while (!stream.atEnd())
+        else
         {
-            currentTextEdit->append(stream.readLine());
-            //ui->textEdit->append(stream.readLine());
+            auto tabIndex = fileInstances.indexOf(newFile);
+            ui->tabWidget->setCurrentIndex(tabIndex);
         }
-        qDebug() << "Pass";
-        // APPEND THE FILENAME TO THE TITLE OF THE WINDOW
-        modifyWindowTitle();
-        //_savestate = true;
+
         file.close();
     }
 }
