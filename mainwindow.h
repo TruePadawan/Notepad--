@@ -22,6 +22,7 @@ public:
     void setSaveState(bool state, int index);
     void checkSaveState();
     bool allSaved();
+    void saveMechanism();
     ~MainWindow();
 
 private slots:

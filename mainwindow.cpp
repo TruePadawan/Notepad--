@@ -28,20 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
 //    saveStates.append(state);
     FileInstance defaultFile{};
     fileInstances.append(defaultFile);
-
-    connect(currentTextEdit, &QTextEdit::undoAvailable, [=] (bool val){
-        ui->actionUndo->setEnabled(val);
-    });
-
-    connect(currentTextEdit, &QTextEdit::redoAvailable, [=] (bool val){
-        ui->actionRedo->setEnabled(val);
-    });
-
-    connect(currentTextEdit, &QTextEdit::copyAvailable, [=] (bool val){
-        ui->actionCopy->setEnabled(val);
-    });
-
-    connect(currentTextEdit, &QTextEdit::textChanged, this, &MainWindow::on_textEdit_textChanged);
+    saveMechanism();
 }
 
 void MainWindow::modifyWindowTitle()
@@ -164,6 +151,23 @@ bool MainWindow::allSaved()
             return false;
     }
     return true;
+}
+
+void MainWindow::saveMechanism()
+{
+    connect(currentTextEdit, &QTextEdit::undoAvailable, [=] (bool val){
+        ui->actionUndo->setEnabled(val);
+    });
+
+    connect(currentTextEdit, &QTextEdit::redoAvailable, [=] (bool val){
+        ui->actionRedo->setEnabled(val);
+    });
+
+    connect(currentTextEdit, &QTextEdit::copyAvailable, [=] (bool val){
+        ui->actionCopy->setEnabled(val);
+    });
+
+    connect(currentTextEdit, &QTextEdit::textChanged, this, &MainWindow::on_textEdit_textChanged);
 }
 
 MainWindow::~MainWindow()
@@ -329,7 +333,7 @@ void MainWindow::on_actionNew_File_2_triggered()
 void MainWindow::on_tabWidget_currentChanged(int index)
 {
     currentTabIndex = index;
-    _savestate = fileInstances[index].getSaveState();
+    //_savestate = fileInstances[index].getSaveState();
     currentFileName = fileInstances[index].getFileName();
     currentFilePath = fileInstances[index].getFilePath();
     qDebug() << "Filename : " << currentFileName;
@@ -337,8 +341,13 @@ void MainWindow::on_tabWidget_currentChanged(int index)
     qDebug() << "Index : " << index << "Length : " << fileInstances.length();
     modifyWindowTitle();
     checkSaveState();
-    currentTextEdit = qobject_cast<QTextEdit *>(ui->tabWidget->widget(index));
-    //currentTextEdit = ui->tabWidget->widget(index)->findChild<QTextEdit *>();
+    //currentTextEdit = qobject_cast<QTextEdit *>(ui->tabWidget->widget(index));
+    currentTextEdit = ui->tabWidget->widget(index)->findChild<QTextEdit *>();
+    if (currentTextEdit != nullptr)
+    {
+        qDebug() << "Not a nullptr";
+        saveMechanism();
+    }
 }
 
 
