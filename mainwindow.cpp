@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    ui->tabWidget->setMovable(true);
+    //ui->tabWidget->setMovable(true);
     ui->tabWidget->setTabText(0,"Untitled");
 
     // ADD A FILE INSTANCE FOR THE DEFAULT TAB
@@ -45,12 +45,17 @@ void MainWindow::modifyWindowTitle()
     }
 }
 
-int MainWindow::newTab()
+int MainWindow::newTab(QString fileName, QString filePath)
 {
     // CREATE A NEW SAVE STATE AND TEXTEDIT PAGE FOR THE NEW TAB
 //    bool newState{true};
 //    saveStates.append(newState);
-    FileInstance newFile{};
+    FileInstance newFile{fileName,filePath};
+    if (fileInstances.contains(newFile))
+    {
+        return -1;
+    }
+
     fileInstances.append(newFile);
 
     QWidget *page = new QWidget;
@@ -60,7 +65,7 @@ int MainWindow::newTab()
     layout->addWidget(textarea);
     page->setLayout(layout);
 
-    return ui->tabWidget->addTab(page,"Untitled");
+    return ui->tabWidget->addTab(page,fileName);
 }
 
 void MainWindow::SaveAs()
@@ -171,6 +176,14 @@ void MainWindow::saveMechanism()
     connect(currentTextEdit, &QTextEdit::textChanged, this, &MainWindow::on_textEdit_textChanged);
 }
 
+void MainWindow::printFiles()
+{
+    foreach (FileInstance tmp, fileInstances) {
+        qDebug() << "File Name: " << tmp.getFileName();
+        qDebug() << "File Path: " << tmp.getFilePath();
+    }
+}
+
 MainWindow::~MainWindow()
 {
     delete ui;
@@ -224,29 +237,29 @@ void MainWindow::on_actionOpen_File_triggered()
             return;
         }
 
-        int index = newTab();
-        ui->tabWidget->setCurrentIndex(index);
-
         // STORE THE NAME AND PATH OF THE CURRENT FILE IN A VARIABLE
         QFileInfo info{filepath};
         currentFileName = info.fileName();
         currentFilePath = filepath;
+
+        int index = newTab(currentFileName,currentFilePath);
+
         FileInstance newFile{currentFileName,currentFilePath};
 
-        if (!fileInstances.contains(newFile))
+        if (index != -1)
         {
-            fileInstances.append(newFile);
+            //fileInstances.append(newFile);
             currentTextEdit = ui->tabWidget->widget(index)->findChild<QTextEdit *>();
-            qDebug() << "Pass";
             QTextStream stream{&file};
             while (!stream.atEnd())
             {
                 currentTextEdit->append(stream.readLine());
                 //ui->textEdit->append(stream.readLine());
             }
+            ui->tabWidget->setCurrentIndex(index);
             qDebug() << "Pass";
             // APPEND THE FILENAME TO THE TITLE OF THE WINDOW
-            modifyWindowTitle();
+//            modifyWindowTitle();
         }
         else
         {
@@ -254,6 +267,7 @@ void MainWindow::on_actionOpen_File_triggered()
             ui->tabWidget->setCurrentIndex(tabIndex);
         }
 
+        printFiles();
         file.close();
     }
 }
@@ -339,9 +353,6 @@ void MainWindow::on_tabWidget_currentChanged(int index)
     //_savestate = fileInstances[index].getSaveState();
     currentFileName = fileInstances[index].getFileName();
     currentFilePath = fileInstances[index].getFilePath();
-    qDebug() << "Filename : " << currentFileName;
-    qDebug() << "Filepath : " << currentFilePath;
-    qDebug() << "Index : " << index << "Length : " << fileInstances.length();
     modifyWindowTitle();
     checkSaveState();
     //currentTextEdit = qobject_cast<QTextEdit *>(ui->tabWidget->widget(index));
@@ -351,6 +362,7 @@ void MainWindow::on_tabWidget_currentChanged(int index)
         qDebug() << "Not a nullptr";
         saveMechanism();
     }
+    printFiles();
 }
 
 

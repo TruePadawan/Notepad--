@@ -16,13 +16,14 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     void modifyWindowTitle();
-    int newTab();
+    int newTab(QString fileName="Untitled", QString filePath=QString());
     void SaveAs();
     void Save();
     void setSaveState(bool state, int index);
     void checkSaveState();
     bool allSaved();
     void saveMechanism();
+    void printFiles();
     ~MainWindow();
 
 private slots:
