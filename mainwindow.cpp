@@ -481,7 +481,7 @@ void MainWindow::on_actionEnter_Distraction_Free_Mode_triggered()
 
 void MainWindow::on_actionAbout_triggered()
 {
-    QMessageBox::about(this,"About Notepad--","<strong>Notepad-- v0.1 </strong><p>A simple text-editor built with Qt/C++</p>");
+    QMessageBox::about(this,"About Notepad--","<strong>Notepad-- v0.2 </strong><p>A simple text-editor built with Qt/C++</p>");
 }
 
 
