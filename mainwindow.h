@@ -67,6 +67,14 @@ private slots:
 
     void on_actionPaste_triggered();
 
+    void on_actionEnter_Distraction_Free_Mode_triggered();
+
+    void on_actionAbout_triggered();
+
+    void on_actionFont_triggered();
+
+    void on_actionShow_Folder_View_triggered();
+
 private:
     Ui::MainWindow *ui;
     QList<FileInstance> fileInstances;

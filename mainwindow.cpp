@@ -2,11 +2,11 @@
 #include "ui_mainwindow.h"
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QFontDialog>
 #include <QDebug>
 #include <QTextStream>
 #include <QFile>
 #include <QFileInfo>
-#include <QChar>
 #include <QVBoxLayout>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -14,18 +14,10 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    //ui->tabWidget->setMovable(true);
     ui->tabWidget->setTabText(0,"Untitled");
-
-    // ADD A FILE INSTANCE FOR THE DEFAULT TAB
-//    FileInstance defaultTab{currentFileName,currentFilePath};
-//    fileInstances.append(defaultTab);
-
+    ui->toolBar->setVisible(false);
+    ui->treeWidget->setVisible(false);
     currentTextEdit = ui->textEdit;
-
-    // ADD A DEFAULT FILE INSTANCE
-//    bool state{true};
-//    saveStates.append(state);
     FileInstance defaultFile{};
     fileInstances.append(defaultFile);
     saveMechanism();
@@ -47,11 +39,8 @@ void MainWindow::modifyWindowTitle()
 
 int MainWindow::newTab(QString fileName, QString filePath)
 {
-    // CREATE A NEW SAVE STATE AND TEXTEDIT PAGE FOR THE NEW TAB
-//    bool newState{true};
-//    saveStates.append(newState);
     FileInstance newFile{fileName,filePath};
-    if (fileInstances.contains(newFile))
+    if (fileName != "Untitled" && fileInstances.contains(newFile))
     {
         return -1;
     }
@@ -87,9 +76,6 @@ void MainWindow::SaveAs()
     currentFilePath = fileinfo.filePath();
 
     modifyWindowTitle();
-
-//    FileInstance newlySaved{currentFileName,currentFilePath};
-//    fileInstances.insert(ui->tabWidget->currentIndex(),newlySaved);
     fileInstances[currentTabIndex].setName_and_Path(currentFileName,currentFilePath);
     fileInstances[currentTabIndex].setSaveState(true);
 
@@ -218,10 +204,10 @@ void MainWindow::on_actionExit_triggered()
         auto decision = QMessageBox::question(this,"Exit","Some files have not been saved, Are you sure you want to exit?",QMessageBox::Yes,QMessageBox::No);
         if (decision == QMessageBox::Yes)
         {
-            close();
+            exit(0);
         }
     }else{
-        close();
+        exit(0);
     }
 }
 
@@ -315,24 +301,29 @@ void MainWindow::on_actionSave_As_triggered()
 
 void MainWindow::on_actionClose_File_triggered()
 {
+
     if (!fileInstances[currentTabIndex].getSaveState())
     {
         auto decision = QMessageBox::question(this,"Confirmation","Are you sure you want to close the current file before saving?",QMessageBox::Yes,QMessageBox::No);
-        if (decision == QMessageBox::Yes)
+        if (decision == QMessageBox::No)
         {
-            setWindowTitle("Notepad--");
-            currentTextEdit->clear();
+            return;
+
+            //setWindowTitle("Notepad--");
+            //currentTextEdit->clear();
             //ui->textEdit->clear();
         }
-    }else
-    {
-        setWindowTitle("Notepad--");
-        currentTextEdit->clear();
-        //ui->textEdit->clear();
     }
-    currentFileName = "";
-    currentFilePath = "";
-    ui->tabWidget->setTabText(ui->tabWidget->currentIndex(),"Untitled");
+
+    if (fileInstances.size() == 1)
+    {
+        exit(0);
+    }
+    fileInstances.remove(currentTabIndex);
+    ui->tabWidget->removeTab(currentTabIndex);
+//    currentFileName = "";
+//    currentFilePath = "";
+//    ui->tabWidget->setTabText(ui->tabWidget->currentIndex(),"Untitled");
 }
 
 void MainWindow::on_actionAbout_Qt_triggered()
@@ -424,3 +415,44 @@ void MainWindow::on_actionPaste_triggered()
 {
     currentTextEdit->paste();
 }
+
+void MainWindow::on_actionEnter_Distraction_Free_Mode_triggered()
+{
+    if (this->windowState() == Qt::WindowFullScreen)
+    {
+        this->showMaximized();
+        ui->actionEnter_Distraction_Free_Mode->setText("Enter Distraction Free Mode");
+    }else
+    {
+        this->showFullScreen();
+        qDebug() << this->windowState();
+        ui->actionEnter_Distraction_Free_Mode->setText("Exit Distraction Free Mode");
+    }
+}
+
+
+void MainWindow::on_actionAbout_triggered()
+{
+    QMessageBox::about(this,"About Notepad--","<strong>Notepad-- v0.1 </strong><p>A simple text-editor built with Qt/C++</p>");
+}
+
+
+void MainWindow::on_actionFont_triggered()
+{
+    currentTextEdit->setFont(QFontDialog::getFont(0, currentTextEdit->font()));
+}
+
+
+void MainWindow::on_actionShow_Folder_View_triggered()
+{
+    if (ui->treeWidget->isVisible())
+    {
+        ui->treeWidget->setVisible(false);
+        ui->actionShow_Folder_View->setText("Hide Folder View");
+    }else
+    {
+        ui->treeWidget->setVisible(true);
+        ui->actionShow_Folder_View->setText("Show Folder View");
+    }
+}
+
