@@ -9,6 +9,7 @@
 #include <QFileInfo>
 #include <QVBoxLayout>
 
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -16,11 +17,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     ui->tabWidget->setTabText(0,"Untitled");
     ui->toolBar->setVisible(false);
-    ui->treeWidget->setVisible(false);
+    ui->treeView->setVisible(false);
     currentTextEdit = ui->textEdit;
     FileInstance defaultFile{};
     fileInstances.append(defaultFile);
+
     saveMechanism();
+    configureFolderView();
 }
 
 void MainWindow::modifyWindowTitle()
@@ -170,10 +173,55 @@ void MainWindow::printFiles()
     }
 }
 
+void MainWindow::configureFolderView()
+{
+    model = new QFileSystemModel(this);
+    model->setFilter(QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
+    model->setRootPath(QDir::currentPath());
+    ui->treeView->setModel(model);
+    ui->treeView->setRootIndex(model->setRootPath(QDir::currentPath()));
+    ui->treeView->header()->hide();
+    for (int i = 1; i <= 3; i++)
+    {
+        ui->treeView->setColumnHidden(i,true);
+    }
+    QItemSelectionModel *selectionModel = ui->treeView->selectionModel();
+    connect(selectionModel,&QItemSelectionModel::selectionChanged,this,&MainWindow::fileClicked);
+}
+
+void MainWindow::fileClicked()
+{
+    QModelIndex currentIndex = ui->treeView->selectionModel()->currentIndex();
+    if (!model->isDir(currentIndex) && model->fileInfo(currentIndex).suffix() == "txt")
+    {
+        int index = newTab(model->fileName(currentIndex),model->filePath(currentIndex));
+        if (index != -1)
+        {
+            currentFileName = model->fileName(currentIndex);
+            currentFilePath = model->filePath(currentIndex);
+
+            QFile file{model->filePath(currentIndex)};
+            if (!file.open(QIODevice::ReadOnly)){
+                qWarning() << file.errorString();
+                return;
+            }
+            currentTextEdit = ui->tabWidget->widget(index)->findChild<QTextEdit *>();
+            QTextStream stream{&file};
+            while (!stream.atEnd())
+            {
+                currentTextEdit->append(stream.readLine());
+            }
+
+            file.close();
+        }
+    }
+}
+
 MainWindow::~MainWindow()
 {
     delete ui;
     delete currentTextEdit;
+    delete model;
 }
 
 
@@ -319,7 +367,7 @@ void MainWindow::on_actionClose_File_triggered()
     {
         exit(0);
     }
-    fileInstances.remove(currentTabIndex);
+    fileInstances.removeAt(currentTabIndex);
     ui->tabWidget->removeTab(currentTabIndex);
 //    currentFileName = "";
 //    currentFilePath = "";
@@ -445,14 +493,22 @@ void MainWindow::on_actionFont_triggered()
 
 void MainWindow::on_actionShow_Folder_View_triggered()
 {
-    if (ui->treeWidget->isVisible())
+    if (ui->treeView->isVisible())
     {
-        ui->treeWidget->setVisible(false);
+        ui->treeView->setVisible(false);
         ui->actionShow_Folder_View->setText("Hide Folder View");
     }else
     {
-        ui->treeWidget->setVisible(true);
+        ui->treeView->setVisible(true);
         ui->actionShow_Folder_View->setText("Show Folder View");
     }
+}
+
+
+void MainWindow::on_actionOpen_Folder_triggered()
+{
+    auto dir = QFileDialog::getExistingDirectory(this,"Open Folder");
+    model->setRootPath(dir);
+    ui->treeView->setRootIndex(model->setRootPath(dir));
 }
 

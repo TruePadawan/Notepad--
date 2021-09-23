@@ -3,6 +3,8 @@
 #include <QMainWindow>
 #include <QList>
 #include <QTextEdit>
+#include <QFileSystemModel>
+#include <QItemSelection>
 #include <fileinstance.h>
 
 QT_BEGIN_NAMESPACE
@@ -24,6 +26,8 @@ public:
     bool allSaved();
     void saveMechanism();
     void printFiles();
+    void configureFolderView();
+    void fileClicked();
     ~MainWindow();
 
 private slots:
@@ -75,6 +79,8 @@ private slots:
 
     void on_actionShow_Folder_View_triggered();
 
+    void on_actionOpen_Folder_triggered();
+
 private:
     Ui::MainWindow *ui;
     QList<FileInstance> fileInstances;
@@ -82,6 +88,7 @@ private:
     QString currentFileName;
     QString currentFilePath;
     QTextEdit *currentTextEdit;
+    QFileSystemModel *model;
     int currentTabIndex{0};
     bool _savestate{true};
 };

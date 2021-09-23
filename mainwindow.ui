@@ -473,7 +473,7 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QTreeWidget" name="treeWidget">
+       <widget class="QTreeView" name="treeView">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
           <horstretch>0</horstretch>
@@ -486,11 +486,6 @@
           <height>16777215</height>
          </size>
         </property>
-        <column>
-         <property name="text">
-          <string notr="true">1</string>
-         </property>
-        </column>
        </widget>
       </item>
       <item>
@@ -552,6 +547,7 @@
     </property>
     <addaction name="actionNew_File_2"/>
     <addaction name="actionOpen_File_2"/>
+    <addaction name="actionOpen_Folder"/>
     <addaction name="separator"/>
     <addaction name="actionSave"/>
     <addaction name="actionSave_As_2"/>
@@ -840,6 +836,11 @@
   <action name="actionShow_Folder_View">
    <property name="text">
     <string>Show Folder View</string>
+   </property>
+  </action>
+  <action name="actionOpen_Folder">
+   <property name="text">
+    <string>Open Folder</string>
    </property>
   </action>
  </widget>
