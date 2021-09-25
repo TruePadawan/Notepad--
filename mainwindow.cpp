@@ -392,7 +392,7 @@ void MainWindow::on_actionClose_File_triggered()
         //exit(0);
     }
     fileInstances.removeAt(currentTabIndex);
-    syntaxHighlight.removeAt(currentTabIndex);
+    syntaxHighlight.takeAt(currentTabIndex)->deleteLater();
     ui->tabWidget->removeTab(currentTabIndex);
 //    currentFileName = "";
 //    currentFilePath = "";
