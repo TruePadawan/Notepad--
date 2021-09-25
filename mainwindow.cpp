@@ -238,11 +238,11 @@ MainWindow::~MainWindow()
     delete currentTextEdit;
     delete model;
 
-    for (auto syn: syntaxHighlight)
-    {
-        qDebug() << "Delete";
-        delete syn;
-    }
+//    for (auto syn: syntaxHighlight)
+//    {
+//        qDebug() << "Delete";
+//        delete syn;
+//    }
 }
 
 

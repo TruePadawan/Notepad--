@@ -55,6 +55,11 @@ Highlighter::Highlighter(QTextDocument *parent)
     commentEndExpression = QRegularExpression(QStringLiteral("\\*/"));
 }
 
+Highlighter::~Highlighter()
+{
+    qDebug() << "Highlighter deleting...";
+}
+
 void Highlighter::highlightBlock(const QString &text)
 {
     for (const HighlightingRule &rule : qAsConst(highlightingRules)) {

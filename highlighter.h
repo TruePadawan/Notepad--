@@ -10,6 +10,7 @@ class Highlighter :public QSyntaxHighlighter
     Q_OBJECT
 public:
     Highlighter(QTextDocument *parent = 0);
+    ~Highlighter();
 protected:
     void highlightBlock(const QString &text) override;
 
