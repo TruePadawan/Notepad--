@@ -6,6 +6,7 @@
 #include <QFileSystemModel>
 #include <QItemSelection>
 #include <fileinstance.h>
+#include <highlighter.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -89,6 +90,10 @@ private:
     QString currentFilePath;
     QTextEdit *currentTextEdit;
     QFileSystemModel *model;
+    QList<Highlighter *> syntaxHighlight;
+    //Highlighter *highlighter;
     int currentTabIndex{0};
     bool _savestate{true};
+    QFont tmp;
+
 };

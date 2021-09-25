@@ -10,11 +10,13 @@ CONFIG += c++1z
 
 SOURCES += \
     fileinstance.cpp \
+    highlighter.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     fileinstance.h \
+    highlighter.h \
     mainwindow.h
 
 FORMS += \

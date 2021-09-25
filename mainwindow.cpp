@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QTextStream>
 #include <QFile>
+#include <QFont>
 #include <QFileInfo>
 #include <QVBoxLayout>
 
@@ -18,12 +19,19 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tabWidget->setTabText(0,"Untitled");
     ui->toolBar->setVisible(false);
     ui->treeView->setVisible(false);
+
     currentTextEdit = ui->textEdit;
+    Highlighter *syntax = new Highlighter(currentTextEdit->document());
+    syntaxHighlight.append(syntax);
+    //highlighter = new Highlighter(currentTextEdit->document());
+
     FileInstance defaultFile{};
     fileInstances.append(defaultFile);
 
+    tmp = currentTextEdit->font();
     saveMechanism();
     configureFolderView();
+    //QApplication::setQuitOnLastWindowClosed(true);
 }
 
 void MainWindow::modifyWindowTitle()
@@ -56,6 +64,9 @@ int MainWindow::newTab(QString fileName, QString filePath)
     QVBoxLayout *layout = new QVBoxLayout;
     layout->addWidget(textarea);
     page->setLayout(layout);
+
+    Highlighter *syntax = new Highlighter(textarea->document());
+    syntaxHighlight.append(syntax);
 
     return ui->tabWidget->addTab(page,fileName);
 }
@@ -192,28 +203,32 @@ void MainWindow::configureFolderView()
 void MainWindow::fileClicked()
 {
     QModelIndex currentIndex = ui->treeView->selectionModel()->currentIndex();
-    if (!model->isDir(currentIndex) && model->fileInfo(currentIndex).suffix() == "txt")
+    if (!model->isDir(currentIndex))
     {
-        int index = newTab(model->fileName(currentIndex),model->filePath(currentIndex));
-        if (index != -1)
+        if ( model->fileInfo(currentIndex).suffix() == "txt" || model->fileInfo(currentIndex).suffix() == "cpp" || model->fileInfo(currentIndex).suffix() == "h")
         {
-            currentFileName = model->fileName(currentIndex);
-            currentFilePath = model->filePath(currentIndex);
-
-            QFile file{model->filePath(currentIndex)};
-            if (!file.open(QIODevice::ReadOnly)){
-                qWarning() << file.errorString();
-                return;
-            }
-            currentTextEdit = ui->tabWidget->widget(index)->findChild<QTextEdit *>();
-            QTextStream stream{&file};
-            while (!stream.atEnd())
+            int index = newTab(model->fileName(currentIndex),model->filePath(currentIndex));
+            if (index != -1)
             {
-                currentTextEdit->append(stream.readLine());
-            }
 
-            file.close();
-        }
+                currentFileName = model->fileName(currentIndex);
+                currentFilePath = model->filePath(currentIndex);
+
+                QFile file{model->filePath(currentIndex)};
+                if (!file.open(QIODevice::ReadOnly)){
+                    qWarning() << file.errorString();
+                    return;
+                }
+                currentTextEdit = ui->tabWidget->widget(index)->findChild<QTextEdit *>();
+                QTextStream stream{&file};
+                while (!stream.atEnd())
+                {
+                    currentTextEdit->append(stream.readLine());
+                }
+                file.close();
+                ui->tabWidget->setCurrentIndex(index);
+            }
+       }
     }
 }
 
@@ -222,6 +237,12 @@ MainWindow::~MainWindow()
     delete ui;
     delete currentTextEdit;
     delete model;
+
+    for (auto syn: syntaxHighlight)
+    {
+        qDebug() << "Delete";
+        delete syn;
+    }
 }
 
 
@@ -252,17 +273,17 @@ void MainWindow::on_actionExit_triggered()
         auto decision = QMessageBox::question(this,"Exit","Some files have not been saved, Are you sure you want to exit?",QMessageBox::Yes,QMessageBox::No);
         if (decision == QMessageBox::Yes)
         {
-            exit(0);
+            qApp->quit();
         }
     }else{
-        exit(0);
+        qApp->quit();
     }
 }
 
 
 void MainWindow::on_actionOpen_File_triggered()
 {
-    QString filepath = QFileDialog::getOpenFileName(this,"Open File",QString(),tr("Text File (*.txt *.ini)"));
+    QString filepath = QFileDialog::getOpenFileName(this,"Open File",QString(),tr("Text File (*.txt *.ini);;C++ Files (*.cpp *.h)"));
     if (!filepath.isNull())
     {
         QFile file{filepath};
@@ -284,6 +305,7 @@ void MainWindow::on_actionOpen_File_triggered()
         {
             //fileInstances.append(newFile);
             currentTextEdit = ui->tabWidget->widget(index)->findChild<QTextEdit *>();
+
             QTextStream stream{&file};
             while (!stream.atEnd())
             {
@@ -309,6 +331,7 @@ void MainWindow::on_actionOpen_File_triggered()
 
 void MainWindow::on_textEdit_textChanged()
 {
+    qDebug() << "Text Edit Changing!";
     //setSaveState(false, ui->tabWidget->currentIndex());
     fileInstances[currentTabIndex].setSaveState(false);
     if (windowTitle().at(0) != '*')
@@ -365,9 +388,11 @@ void MainWindow::on_actionClose_File_triggered()
 
     if (fileInstances.size() == 1)
     {
-        exit(0);
+        qApp->quit();
+        //exit(0);
     }
     fileInstances.removeAt(currentTabIndex);
+    syntaxHighlight.removeAt(currentTabIndex);
     ui->tabWidget->removeTab(currentTabIndex);
 //    currentFileName = "";
 //    currentFilePath = "";
@@ -396,6 +421,8 @@ void MainWindow::on_tabWidget_currentChanged(int index)
     checkSaveState();
     //currentTextEdit = qobject_cast<QTextEdit *>(ui->tabWidget->widget(index));
     currentTextEdit = ui->tabWidget->widget(index)->findChild<QTextEdit *>();
+    currentTextEdit->setFont(tmp);
+    //highlighter->setDocument(currentTextEdit->document());
     if (currentTextEdit != nullptr)
     {
         qDebug() << "Not a nullptr";

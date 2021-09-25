@@ -505,7 +505,16 @@
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
-           <widget class="QTextEdit" name="textEdit"/>
+           <widget class="QTextEdit" name="textEdit">
+            <property name="font">
+             <font>
+              <family>Monospac821 BT</family>
+              <pointsize>10</pointsize>
+              <weight>50</weight>
+              <bold>false</bold>
+             </font>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
