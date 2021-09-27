@@ -5,7 +5,8 @@
 #include <QTextEdit>
 #include <QFileSystemModel>
 #include <QItemSelection>
-#include <fileinstance.h>
+#include <highlighter.h>
+#include <customtabwidget.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -18,13 +19,9 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     void modifyWindowTitle();
-    int newTab(QString fileName="Untitled", QString filePath=QString());
-    void SaveAs();
-    void Save();
-    void setSaveState(bool state, int index);
     void checkSaveState();
     bool allSaved();
-    void saveMechanism();
+    void saveMechanism(CustomTabWidget *cust);
     void printFiles();
     void configureFolderView();
     void fileClicked();
@@ -37,7 +34,7 @@ private slots:
 
     void on_actionOpen_File_triggered();
 
-    void on_textEdit_textChanged();
+    void textEdit_Modified();
 
     void on_actionSave_File_triggered();
 
@@ -83,12 +80,8 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    QList<FileInstance> fileInstances;
-    QList<bool> saveStates;
     QString currentFileName;
     QString currentFilePath;
-    QTextEdit *currentTextEdit;
     QFileSystemModel *model;
-    int currentTabIndex{0};
-    bool _savestate{true};
+    QString lastFolderOpened;
 };

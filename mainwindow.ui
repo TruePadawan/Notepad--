@@ -453,7 +453,7 @@
    </palette>
   </property>
   <property name="windowTitle">
-   <string>Notepad--</string>
+   <string>[*]Notepad--</string>
   </property>
   <property name="windowIcon">
    <iconset resource="resource.qrc">
@@ -494,21 +494,8 @@
          <string notr="true"/>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>-1</number>
         </property>
-        <widget class="QWidget" name="tab_9">
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <attribute name="title">
-          <string>Tab 1</string>
-         </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
-           <widget class="QTextEdit" name="textEdit"/>
-          </item>
-         </layout>
-        </widget>
        </widget>
       </item>
      </layout>
