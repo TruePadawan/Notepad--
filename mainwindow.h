@@ -25,6 +25,7 @@ public:
     void printFiles();
     void configureFolderView();
     void fileClicked();
+    bool checkFileCollision(QString file);
     ~MainWindow();
 
 private slots:
@@ -46,7 +47,7 @@ private slots:
 
     void on_actionNew_File_2_triggered();
 
-    void on_tabWidget_currentChanged(int index);
+    void on_tabWidget_currentChanged();
 
     void on_actionOpen_File_2_triggered();
 

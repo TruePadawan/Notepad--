@@ -9,12 +9,14 @@ CustomTabWidget::CustomTabWidget(QWidget *parent)
     //rule.setDocument(this->document());
     this->setFont(QFont("Monospac821 BT"));
     this->setFontWeight(QFont::Bold);
+    this->setFontPointSize(10);
 }
 
 CustomTabWidget::CustomTabWidget(const QString &filename, const QString &filepath, QWidget *parent)
     :QTextEdit(parent){
     this->setFont(QFont("Monospac821 BT"));
     this->setFontWeight(QFont::Bold);
+    this->setFontPointSize(10);
     fileName = filename;
     filePath = filepath;
     saveState = true;
@@ -49,25 +51,6 @@ void CustomTabWidget::openFile(QString filepath)
         fileName = info.fileName();
 
         file.close();
-//    auto path = QFileDialog::getOpenFileName(this,tr("Open File"),QString(),tr("Text File (*.txt *.ini);;C++ Files (*.cpp *.h)"));
-
-//    if (!path.isNull())
-//    {
-//        QFile file{path};
-
-//        if (!file.open(QIODevice::ReadOnly)){
-//            qWarning() << file.errorString();
-//            return;
-//        }
-
-//        QFileInfo info{path};
-//        fileName = info.fileName();
-//        filePath = path;
-
-//        QTextStream stream{&file};
-//        this->setText(stream.readAll());
-//        file.close();
-//    }
 }
 
 void CustomTabWidget::save()

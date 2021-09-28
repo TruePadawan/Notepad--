@@ -120,11 +120,27 @@ void MainWindow::fileClicked()
     {
         if ( model->fileInfo(currentIndex).suffix() == "txt" || model->fileInfo(currentIndex).suffix() == "cpp" || model->fileInfo(currentIndex).suffix() == "h")
         {
-            auto * tab = new CustomTabWidget(model->fileName(currentIndex),model->filePath(currentIndex),this);
-            int index = ui->tabWidget->addTab(tab,tab->getFileName());
-            ui->tabWidget->setCurrentIndex(index);
+            if (!checkFileCollision(model->filePath(currentIndex)))
+            {
+                auto * tab = new CustomTabWidget(model->fileName(currentIndex),model->filePath(currentIndex),this);
+                int index = ui->tabWidget->addTab(tab,tab->getFileName());
+                ui->tabWidget->setCurrentIndex(index);
+            }
        }
     }
+}
+
+bool MainWindow::checkFileCollision(QString file)
+{
+    for (int i = 0; i < ui->tabWidget->count(); i++)
+    {
+        auto tab = qobject_cast<CustomTabWidget *>(ui->tabWidget->widget(i));
+        if (tab->getFilePath() == file)
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 MainWindow::~MainWindow()
@@ -163,6 +179,8 @@ void MainWindow::on_actionOpen_File_triggered()
 {
     QString file = QFileDialog::getOpenFileName(this);
     if (file.isNull())
+        return;
+    if (checkFileCollision(file))
         return;
     QFileInfo info{file};
     auto * tab = new CustomTabWidget(info.fileName(),file,this);
@@ -252,7 +270,7 @@ void MainWindow::on_actionNew_File_2_triggered()
 }
 
 
-void MainWindow::on_tabWidget_currentChanged(int index)
+void MainWindow::on_tabWidget_currentChanged()
 {
     //currentTextEdit = qobject_cast<CustomTabWidget *>(ui->tabWidget->currentWidget());
     auto tab = qobject_cast<CustomTabWidget *>(ui->tabWidget->currentWidget());
@@ -364,11 +382,11 @@ void MainWindow::on_actionShow_Folder_View_triggered()
     if (ui->treeView->isVisible())
     {
         ui->treeView->setVisible(false);
-        ui->actionShow_Folder_View->setText("Hide Folder View");
+        ui->actionShow_Folder_View->setText("Show Folder View");
     }else
     {
         ui->treeView->setVisible(true);
-        ui->actionShow_Folder_View->setText("Show Folder View");
+        ui->actionShow_Folder_View->setText("Hide Folder View");
     }
 }
 
@@ -382,7 +400,6 @@ void MainWindow::on_actionOpen_Folder_triggered()
         {
             model->setRootPath(dir);
             ui->treeView->setRootIndex(model->setRootPath(dir));
-            on_actionShow_Folder_View_triggered();
         }
     }else
     {
@@ -391,7 +408,12 @@ void MainWindow::on_actionOpen_Folder_triggered()
         {
             model->setRootPath(dir);
             ui->treeView->setRootIndex(model->setRootPath(dir));
-            on_actionShow_Folder_View_triggered();
         }
+    }
+
+    if (!ui->treeView->isVisible())
+    {
+        ui->treeView->setVisible(true);
+        ui->actionShow_Folder_View->setText("Hide Folder View");
     }
 }
