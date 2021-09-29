@@ -589,10 +589,17 @@
     </property>
     <addaction name="actionFont"/>
    </widget>
+   <widget class="QMenu" name="menuPlugins">
+    <property name="title">
+     <string>Plugins</string>
+    </property>
+    <addaction name="actionPaste_to_Pastebin"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuFormat"/>
    <addaction name="menuView"/>
+   <addaction name="menuPlugins"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="toolBar">
@@ -828,6 +835,11 @@
   <action name="actionOpen_Folder">
    <property name="text">
     <string>Open Folder</string>
+   </property>
+  </action>
+  <action name="actionPaste_to_Pastebin">
+   <property name="text">
+    <string>Paste to Pastebin</string>
    </property>
   </action>
  </widget>

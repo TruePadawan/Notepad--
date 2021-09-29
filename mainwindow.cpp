@@ -143,6 +143,18 @@ bool MainWindow::checkFileCollision(QString file)
     return false;
 }
 
+void MainWindow::closeEvent(QCloseEvent *ev)
+{
+    if (!allSaved())
+    {
+        auto choice = QMessageBox::question(this,"Exit","Are you sure you want to discard unsaved files?",QMessageBox::Yes,QMessageBox::No);
+        if (choice != QMessageBox::Yes)
+        {
+            ev->ignore();
+        }
+    }
+}
+
 MainWindow::~MainWindow()
 {
     delete ui;
@@ -417,3 +429,9 @@ void MainWindow::on_actionOpen_Folder_triggered()
         ui->actionShow_Folder_View->setText("Hide Folder View");
     }
 }
+
+void MainWindow::on_actionPaste_to_Pastebin_triggered()
+{
+
+}
+

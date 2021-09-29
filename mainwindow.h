@@ -5,6 +5,7 @@
 #include <QTextEdit>
 #include <QFileSystemModel>
 #include <QItemSelection>
+#include <QCloseEvent>
 #include <highlighter.h>
 #include <customtabwidget.h>
 
@@ -26,6 +27,7 @@ public:
     void configureFolderView();
     void fileClicked();
     bool checkFileCollision(QString file);
+    void closeEvent(QCloseEvent *ev) override;
     ~MainWindow();
 
 private slots:
@@ -79,10 +81,13 @@ private slots:
 
     void on_actionOpen_Folder_triggered();
 
+    void on_actionPaste_to_Pastebin_triggered();
+
 private:
     Ui::MainWindow *ui;
     QString currentFileName;
     QString currentFilePath;
     QFileSystemModel *model;
     QString lastFolderOpened;
+    const QString API_KEY = "3oi69tXZQPRGGP6ovxVjZAjLKki3ncyx";
 };

@@ -7,15 +7,15 @@ CustomTabWidget::CustomTabWidget(QWidget *parent)
     filePath = QString();
     saveState = true;
     //rule.setDocument(this->document());
-    this->setFont(QFont("Monospac821 BT"));
-    this->setFontWeight(QFont::Bold);
+    this->setFont(QFont("Fira Code Medium"));
+    //this->setFontWeight(QFont::Bold);
     this->setFontPointSize(10);
 }
 
 CustomTabWidget::CustomTabWidget(const QString &filename, const QString &filepath, QWidget *parent)
     :QTextEdit(parent){
-    this->setFont(QFont("Monospac821 BT"));
-    this->setFontWeight(QFont::Bold);
+    this->setFont(QFont("Fira Code Medium"));
+    //this->setFontWeight(QFont::Bold);
     this->setFontPointSize(10);
     fileName = filename;
     filePath = filepath;
