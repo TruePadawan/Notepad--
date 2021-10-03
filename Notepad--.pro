@@ -9,15 +9,17 @@ CONFIG += c++1z
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    fileinstance.cpp \
+    customtabwidget.cpp \
     highlighter.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    qpastebin.cpp
 
 HEADERS += \
-    fileinstance.h \
+    customtabwidget.h \
     highlighter.h \
-    mainwindow.h
+    mainwindow.h \
+    qpastebin.h
 
 FORMS += \
     mainwindow.ui

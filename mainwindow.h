@@ -5,8 +5,11 @@
 #include <QTextEdit>
 #include <QFileSystemModel>
 #include <QItemSelection>
-#include <fileinstance.h>
+#include <QCloseEvent>
+#include <QLineEdit>
 #include <highlighter.h>
+#include <customtabwidget.h>
+#include <qpastebin.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -19,16 +22,14 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     void modifyWindowTitle();
-    int newTab(QString fileName="Untitled", QString filePath=QString());
-    void SaveAs();
-    void Save();
-    void setSaveState(bool state, int index);
     void checkSaveState();
     bool allSaved();
-    void saveMechanism();
+    void saveMechanism(CustomTabWidget *cust);
     void printFiles();
     void configureFolderView();
     void fileClicked();
+    bool checkFileCollision(QString file);
+    void closeEvent(QCloseEvent *ev) override;
     ~MainWindow();
 
 private slots:
@@ -38,7 +39,7 @@ private slots:
 
     void on_actionOpen_File_triggered();
 
-    void on_textEdit_textChanged();
+    void textEdit_Modified();
 
     void on_actionSave_File_triggered();
 
@@ -50,7 +51,7 @@ private slots:
 
     void on_actionNew_File_2_triggered();
 
-    void on_tabWidget_currentChanged(int index);
+    void on_tabWidget_currentChanged();
 
     void on_actionOpen_File_2_triggered();
 
@@ -82,18 +83,15 @@ private slots:
 
     void on_actionOpen_Folder_triggered();
 
+    void on_actionPaste_to_Pastebin_triggered();
+
 private:
     Ui::MainWindow *ui;
-    QList<FileInstance> fileInstances;
-    QList<bool> saveStates;
     QString currentFileName;
     QString currentFilePath;
-    QTextEdit *currentTextEdit;
     QFileSystemModel *model;
-    QList<Highlighter *> syntaxHighlight;
-    //Highlighter *highlighter;
-    int currentTabIndex{0};
-    bool _savestate{true};
-    QFont tmp;
-
+    QString lastFolderOpened;
+    QLineEdit edit;
+    const QString API_KEY = "3oi69tXZQPRGGP6ovxVjZAjLKki3ncyx";
+    QPasteBin *pasteBin;
 };

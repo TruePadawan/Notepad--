@@ -453,7 +453,7 @@
    </palette>
   </property>
   <property name="windowTitle">
-   <string>Notepad--</string>
+   <string>[*]Notepad--</string>
   </property>
   <property name="windowIcon">
    <iconset resource="resource.qrc">
@@ -494,30 +494,8 @@
          <string notr="true"/>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>-1</number>
         </property>
-        <widget class="QWidget" name="tab_9">
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <attribute name="title">
-          <string>Tab 1</string>
-         </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
-           <widget class="QTextEdit" name="textEdit">
-            <property name="font">
-             <font>
-              <family>Monospac821 BT</family>
-              <pointsize>10</pointsize>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
        </widget>
       </item>
      </layout>
@@ -611,10 +589,17 @@
     </property>
     <addaction name="actionFont"/>
    </widget>
+   <widget class="QMenu" name="menuPlugins">
+    <property name="title">
+     <string>Plugins</string>
+    </property>
+    <addaction name="actionPaste_to_Pastebin"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuFormat"/>
    <addaction name="menuView"/>
+   <addaction name="menuPlugins"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="toolBar">
@@ -642,6 +627,7 @@
    <addaction name="separator"/>
    <addaction name="actionExit"/>
   </widget>
+  <widget class="QStatusBar" name="statusBar"/>
   <action name="actionNew_File">
    <property name="icon">
     <iconset resource="resource.qrc">
@@ -850,6 +836,11 @@
   <action name="actionOpen_Folder">
    <property name="text">
     <string>Open Folder</string>
+   </property>
+  </action>
+  <action name="actionPaste_to_Pastebin">
+   <property name="text">
+    <string>Paste to Pastebin</string>
    </property>
   </action>
  </widget>
