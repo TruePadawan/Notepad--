@@ -1,8 +1,11 @@
 #include "qpastebin.h"
+#include <QMouseEvent>
 
-QPasteBin::QPasteBin(QWidget *parent) : QWidget(parent)
+QPasteBin::QPasteBin(QObject *parent) : QObject(parent)
 {
+    //this->setAttribute(Qt::WA_NoMousePropagation);
     manager = new QNetworkAccessManager(parent);
+    reply = nullptr;
 }
 
 void QPasteBin::setUpPasting(QString code, QString name, PASTE_MODE mode)
@@ -38,12 +41,25 @@ void QPasteBin::readData()
     auto buffer = reply->readAll();
     val = QUrl::fromPercentEncoding(buffer);
     emit complete();
+    //reply->deleteLater();
 }
 
 QString QPasteBin::getLink()
 {
     return val;
 }
+
+//void QPasteBin::mousePressEvent(QMouseEvent *event)
+//{
+//    qDebug() << "Test";
+//    event->ignore();
+//}
+
+//void QPasteBin::mouseReleaseEvent(QMouseEvent *event)
+//{
+//    qDebug() << "Alpha";
+//    event->ignore();
+//}
 
 QPasteBin::~QPasteBin()
 {

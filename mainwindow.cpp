@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     //ui->toolBar->setVisible(false);
     ui->treeView->setVisible(false);
     ui->statusBar->addPermanentWidget(&edit);
-    pasteBin = new QPasteBin(this);
+    pasteBin = new QPasteBin(ui->menuBar);
     configureFolderView();
 }
 

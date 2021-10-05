@@ -1,6 +1,7 @@
 #ifndef QPASTEBIN_H
 #define QPASTEBIN_H
 
+#include <QObject>
 #include <QWidget>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
@@ -9,7 +10,7 @@
 #include <QUrl>
 #include <QUrlQuery>
 
-class QPasteBin : public QWidget
+class QPasteBin : public QObject
 {
     Q_OBJECT
 private:
@@ -24,12 +25,14 @@ private:
     QString val;
 
 public:
-    explicit QPasteBin(QWidget *parent = nullptr);
+    explicit QPasteBin(QObject *parent = nullptr);
     void setUpPasting(QString code, QString name="Untitled", PASTE_MODE mode=PUBLIC);
     void setUp();
     void paste();
     void readData();
     QString getLink();
+//    void mousePressEvent(QMouseEvent *event) override;
+//    void mouseReleaseEvent(QMouseEvent *event) override;
     ~QPasteBin();
 
 signals:
