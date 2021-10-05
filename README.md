@@ -4,4 +4,7 @@
 ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white)
 
 <strong>A simple text-editor built using Qt/C++</strong>
-![image](https://user-images.githubusercontent.com/71678062/134600907-5168c3ae-b561-45a3-9dbd-ae51cbb6df3b.png)
+![image](https://user-images.githubusercontent.com/71678062/136006511-5c42e13d-1afe-4b6f-ba53-21ee1824de48.png)
+## Notes
+* Supports syntax highlighting for Qt/C++
+* Pastebin plugin added
