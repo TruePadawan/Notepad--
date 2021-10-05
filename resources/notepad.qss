@@ -1,0 +1,58 @@
+QWidget#centralwidget {
+	background-color: rgb(93, 93, 93);
+	color: rgb(234, 234, 234);
+	border-color: rgb(0, 0, 0);
+}
+
+QTreeView {
+	background-color: rgb(21, 21, 21);
+	color: rgb(234, 234, 234);
+}
+
+QTabWidget#tabWidget {
+	background-color: rgb(42, 42, 42);
+	border-color: rgb(0, 0, 0);
+}
+
+QMenuBar {
+	background-color: rgb(21, 21, 21);
+	color: rgb(234, 234, 234);
+}
+
+QAction:hover {
+	background-color: rgb(185, 221, 255);
+	color: black;
+}
+
+QStatusBar {
+	background-color: rgb(21, 21, 21);
+	color: rgb(234, 234, 234);
+}
+
+QLineEdit {
+	background-color: rgb(21, 21, 21);
+	border-style: none;
+	color: red;
+}
+
+QMenuBar > QMenu {
+	background-color: rgb(91, 91, 91);
+	color: white;
+}
+
+QMenu::item:disabled {
+	color: grey;
+}
+
+QMenu::item:selected {
+	background-color: rgb(62, 62, 62);
+}
+
+QMenuBar::item:selected {
+	background-color: rgb(47, 47, 47);
+}
+
+QTabBar::tab {
+	background-color: rgb(76, 76, 76);
+	color: rgb(234, 234, 234);
+}
