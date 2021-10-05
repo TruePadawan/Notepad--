@@ -256,7 +256,7 @@ void MainWindow::actionClose_File_triggered()
     if (tab == nullptr)
         return;
 
-    if (!tab->saved())
+    if (!tab->saved() && ui->tabWidget->count() != 1)
     {
         auto decision = QMessageBox::question(this,"Confirmation","Are you sure you want to close the current file before saving?",QMessageBox::Yes,QMessageBox::No);
         if (decision == QMessageBox::No)
