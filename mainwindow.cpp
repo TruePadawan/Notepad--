@@ -16,9 +16,11 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    on_actionNew_File_triggered();
-    ui->toolBar->setVisible(false);
+    actionNew_File_triggered();
+    //ui->toolBar->setVisible(false);
     ui->treeView->setVisible(false);
+    ui->statusBar->addPermanentWidget(&edit);
+    pasteBin = new QPasteBin(this);
     configureFolderView();
 }
 
@@ -159,11 +161,12 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete model;
+    delete pasteBin;
     qDebug() << "Ending Program";
 }
 
 
-void MainWindow::on_actionNew_File_triggered()
+void MainWindow::actionNew_File_triggered()
 {
     auto * tab = new CustomTabWidget(this);
     ui->tabWidget->addTab(tab,"Untitled");
@@ -172,7 +175,7 @@ void MainWindow::on_actionNew_File_triggered()
 }
 
 
-void MainWindow::on_actionExit_triggered()
+void MainWindow::actionExit_triggered()
 {
     if (!allSaved())
     {
@@ -187,7 +190,7 @@ void MainWindow::on_actionExit_triggered()
 }
 
 
-void MainWindow::on_actionOpen_File_triggered()
+void MainWindow::actionOpen_File_triggered()
 {
     QString file = QFileDialog::getOpenFileName(this);
     if (file.isNull())
@@ -215,7 +218,7 @@ void MainWindow::textEdit_Modified()
 }
 
 
-void MainWindow::on_actionSave_File_triggered()
+void MainWindow::actionSave_File_triggered()
 {
     auto tab = qobject_cast<CustomTabWidget *>(ui->tabWidget->currentWidget());
     if (tab == nullptr)
@@ -231,7 +234,7 @@ void MainWindow::on_actionSave_File_triggered()
 }
 
 
-void MainWindow::on_actionSave_As_triggered()
+void MainWindow::actionSave_As_triggered()
 {
     auto tab = qobject_cast<CustomTabWidget *>(ui->tabWidget->currentWidget());
     if (tab == nullptr)
@@ -247,7 +250,7 @@ void MainWindow::on_actionSave_As_triggered()
 }
 
 
-void MainWindow::on_actionClose_File_triggered()
+void MainWindow::actionClose_File_triggered()
 {
     auto tab = qobject_cast<CustomTabWidget *>(ui->tabWidget->currentWidget());
     if (tab == nullptr)
@@ -278,7 +281,7 @@ void MainWindow::on_actionAbout_Qt_triggered()
 
 void MainWindow::on_actionNew_File_2_triggered()
 {
-    on_actionNew_File_triggered();
+    actionNew_File_triggered();
 }
 
 
@@ -299,31 +302,31 @@ void MainWindow::on_tabWidget_currentChanged()
 
 void MainWindow::on_actionOpen_File_2_triggered()
 {
-    on_actionOpen_File_triggered();
+    actionOpen_File_triggered();
 }
 
 
 void MainWindow::on_actionSave_triggered()
 {
-    on_actionSave_File_triggered();
+    actionSave_File_triggered();
 }
 
 
 void MainWindow::on_actionSave_As_2_triggered()
 {
-    on_actionSave_As_triggered();
+    actionSave_As_triggered();
 }
 
 
 void MainWindow::on_actionClose_File_2_triggered()
 {
-    on_actionClose_File_triggered();
+    actionClose_File_triggered();
 }
 
 
 void MainWindow::on_actionExit_2_triggered()
 {
-    on_actionExit_triggered();
+    actionExit_triggered();
 }
 
 
@@ -432,6 +435,20 @@ void MainWindow::on_actionOpen_Folder_triggered()
 
 void MainWindow::on_actionPaste_to_Pastebin_triggered()
 {
+    auto tab = qobject_cast<CustomTabWidget *>(ui->tabWidget->currentWidget());
+    if (!tab->toPlainText().isEmpty())
+    {
+        pasteBin->setUpPasting(tab->toPlainText());
+        pasteBin->paste();
 
+//    pasteBin paste{this};
+//    paste.setUpPasting(tab->toPlainText());
+
+//    paste.paste();
+//    qDebug() << "Hmm";
+        connect(pasteBin,&QPasteBin::complete,[&]{
+            edit.setText(pasteBin->getLink());
+        });
+    }
 }
 

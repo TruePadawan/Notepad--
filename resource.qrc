@@ -1,11 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>resources/new_file.ico</file>
-        <file>resources/exit.ico</file>
-        <file>resources/save.ico</file>
-        <file>resources/save_as.ico</file>
-        <file>resources/open_file.ico</file>
-        <file>resources/notepad.ico</file>
-        <file>resources/close_file.ico</file>
+        <file>resources/notepad.qss</file>
     </qresource>
 </RCC>

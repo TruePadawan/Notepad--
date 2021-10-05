@@ -12,12 +12,14 @@ SOURCES += \
     customtabwidget.cpp \
     highlighter.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    qpastebin.cpp
 
 HEADERS += \
     customtabwidget.h \
     highlighter.h \
-    mainwindow.h
+    mainwindow.h \
+    qpastebin.h
 
 FORMS += \
     mainwindow.ui

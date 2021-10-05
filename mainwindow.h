@@ -6,8 +6,10 @@
 #include <QFileSystemModel>
 #include <QItemSelection>
 #include <QCloseEvent>
+#include <QLineEdit>
 #include <highlighter.h>
 #include <customtabwidget.h>
+#include <qpastebin.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -31,19 +33,19 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_actionNew_File_triggered();
+    void actionNew_File_triggered();
 
-    void on_actionExit_triggered();
+    void actionExit_triggered();
 
-    void on_actionOpen_File_triggered();
+    void actionOpen_File_triggered();
 
     void textEdit_Modified();
 
-    void on_actionSave_File_triggered();
+    void actionSave_File_triggered();
 
-    void on_actionSave_As_triggered();
+    void actionSave_As_triggered();
 
-    void on_actionClose_File_triggered();
+    void actionClose_File_triggered();
 
     void on_actionAbout_Qt_triggered();
 
@@ -89,5 +91,7 @@ private:
     QString currentFilePath;
     QFileSystemModel *model;
     QString lastFolderOpened;
+    QLineEdit edit;
     const QString API_KEY = "3oi69tXZQPRGGP6ovxVjZAjLKki3ncyx";
+    QPasteBin *pasteBin;
 };

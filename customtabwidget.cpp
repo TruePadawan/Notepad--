@@ -10,10 +10,12 @@ CustomTabWidget::CustomTabWidget(QWidget *parent)
     this->setFont(QFont("Fira Code Medium"));
     //this->setFontWeight(QFont::Bold);
     this->setFontPointSize(10);
+    this->setStyleSheet("background-color: rgb(42, 42, 42); color: white;");
 }
 
 CustomTabWidget::CustomTabWidget(const QString &filename, const QString &filepath, QWidget *parent)
     :QTextEdit(parent){
+    this->setStyleSheet("background-color: rgb(42, 42, 42); color: white;");
     this->setFont(QFont("Fira Code Medium"));
     //this->setFontWeight(QFont::Bold);
     this->setFontPointSize(10);
