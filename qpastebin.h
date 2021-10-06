@@ -31,8 +31,6 @@ public:
     void paste();
     void readData();
     QString getLink();
-//    void mousePressEvent(QMouseEvent *event) override;
-//    void mouseReleaseEvent(QMouseEvent *event) override;
     ~QPasteBin();
 
 signals:
