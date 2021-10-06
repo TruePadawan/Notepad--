@@ -63,6 +63,6 @@ QString QPasteBin::getLink()
 
 QPasteBin::~QPasteBin()
 {
-    delete manager;
     delete reply;
+    delete manager;
 }
