@@ -3,7 +3,6 @@
 
 QPasteBin::QPasteBin(QObject *parent) : QObject(parent)
 {
-    //this->setAttribute(Qt::WA_NoMousePropagation);
     manager = new QNetworkAccessManager(parent);
     reply = nullptr;
 }
@@ -24,7 +23,6 @@ void QPasteBin::setUp()
     postData.addQueryItem("api_option", "paste");
     postData.addQueryItem("api_paste_private",QString::number(_mode));
     postData.addQueryItem("api_paste_name",_name);
-   // postData.addQueryItem("api_paste_expire_date",QString::number(timeExp)+"M");
     postData.addQueryItem("api_paste_format","cpp");
 }
 
@@ -48,18 +46,6 @@ QString QPasteBin::getLink()
 {
     return val;
 }
-
-//void QPasteBin::mousePressEvent(QMouseEvent *event)
-//{
-//    qDebug() << "Test";
-//    event->ignore();
-//}
-
-//void QPasteBin::mouseReleaseEvent(QMouseEvent *event)
-//{
-//    qDebug() << "Alpha";
-//    event->ignore();
-//}
 
 QPasteBin::~QPasteBin()
 {
