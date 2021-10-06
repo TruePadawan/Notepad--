@@ -1,5 +1,4 @@
 #include "qpastebin.h"
-#include <QMouseEvent>
 
 QPasteBin::QPasteBin(QObject *parent) : QObject(parent)
 {
@@ -39,7 +38,6 @@ void QPasteBin::readData()
     auto buffer = reply->readAll();
     val = QUrl::fromPercentEncoding(buffer);
     emit complete();
-    //reply->deleteLater();
 }
 
 QString QPasteBin::getLink()
