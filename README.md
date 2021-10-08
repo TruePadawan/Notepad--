@@ -9,4 +9,4 @@
 * Supports syntax highlighting for Qt/C++
 * Pastebin plugin added
 ## To use Pastebin Plugin
-* Create an Account on Pastebin website and get an API key, then after cloning this repo, create a folder called 'resources' and create a txt file called 'api.txt' inside that folder and paste in the API key gotten from pastebin
+* Create an Account on Pastebin website and get an API key, then after cloning this repo, create a txt file called 'api.txt' inside that 'resources' folder and paste in the API key gotten from pastebin
