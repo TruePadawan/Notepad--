@@ -30,6 +30,7 @@ public:
     void setUp();
     void paste();
     void readData();
+    QString getApi();
     QString getLink();
     ~QPasteBin();
 

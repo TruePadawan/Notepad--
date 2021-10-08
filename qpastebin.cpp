@@ -1,4 +1,6 @@
 #include "qpastebin.h"
+#include <QFile>
+#include <QTextStream>
 
 QPasteBin::QPasteBin(QObject *parent) : QObject(parent)
 {
@@ -8,7 +10,7 @@ QPasteBin::QPasteBin(QObject *parent) : QObject(parent)
 
 void QPasteBin::setUpPasting(QString code, QString name, PASTE_MODE mode)
 {
-    API_KEY = "3oi69tXZQPRGGP6ovxVjZAjLKki3ncyx";
+    API_KEY = getApi();
     _code = code;
     _mode = mode;
     _name = name;
@@ -38,6 +40,20 @@ void QPasteBin::readData()
     auto buffer = reply->readAll();
     val = QUrl::fromPercentEncoding(buffer);
     emit complete();
+}
+
+QString QPasteBin::getApi()
+{
+    QFile key{":/resources/api.txt"};
+    if (!key.open(QIODevice::ReadOnly))
+    {
+        qDebug() << "Couldn't Access API file";
+    }
+
+    QTextStream stream{&key};
+    auto api = stream.readLine();
+    qDebug() << api;
+    return api;
 }
 
 QString QPasteBin::getLink()

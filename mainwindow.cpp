@@ -17,7 +17,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     actionNew_File_triggered();
-    //ui->toolBar->setVisible(false);
     ui->treeView->setVisible(false);
     ui->statusBar->addPermanentWidget(&edit);
     pasteBin = new QPasteBin(ui->menuBar);
@@ -440,12 +439,6 @@ void MainWindow::on_actionPaste_to_Pastebin_triggered()
     {
         pasteBin->setUpPasting(tab->toPlainText());
         pasteBin->paste();
-
-//    pasteBin paste{this};
-//    paste.setUpPasting(tab->toPlainText());
-
-//    paste.paste();
-//    qDebug() << "Hmm";
         connect(pasteBin,&QPasteBin::complete,[&]{
             edit.setText(pasteBin->getLink());
         });
