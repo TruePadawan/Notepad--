@@ -48,11 +48,13 @@ QString QPasteBin::getApi()
     if (!key.open(QIODevice::ReadOnly))
     {
         qDebug() << "Couldn't Access API file";
+        return "Couldn't Access API file";
     }
 
     QTextStream stream{&key};
     auto api = stream.readLine();
     qDebug() << api;
+    key.close();
     return api;
 }
 
