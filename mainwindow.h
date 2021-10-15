@@ -92,6 +92,5 @@ private:
     QFileSystemModel *model;
     QString lastFolderOpened;
     QLineEdit edit;
-    const QString API_KEY = "3oi69tXZQPRGGP6ovxVjZAjLKki3ncyx";
     QPasteBin *pasteBin;
 };
