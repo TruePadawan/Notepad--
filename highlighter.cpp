@@ -6,7 +6,7 @@ Highlighter::Highlighter(QTextDocument *parent)
     HighlightingRule rule;
 
     keywordFormat.setForeground(Qt::cyan);
-    keywordFormat.setFontWeight(QFont::Bold);
+    keywordFormat.setFontWeight(QFont::Medium);
     const QString keywordPatters[] = {
         QStringLiteral("\\bchar\\b"), QStringLiteral("\\bclass\\b"), QStringLiteral("\\bconst\\b"),
         QStringLiteral("\\bdouble\\b"), QStringLiteral("\\benum\\b"), QStringLiteral("\\bexplicit\\b"),
@@ -27,7 +27,7 @@ Highlighter::Highlighter(QTextDocument *parent)
         highlightingRules.append(rule);
     }
 
-    classFormat.setFontWeight(QFont::Bold);
+    classFormat.setFontWeight(QFont::Medium);
     classFormat.setForeground(QColor::fromRgb(255,140,57));
     rule.pattern = QRegularExpression(QStringLiteral("\\bQ[A-Za-z]+\\b"));
     rule.format = classFormat;
