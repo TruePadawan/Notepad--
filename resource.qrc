@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/">
         <file>resources/notepad.qss</file>
-        <file>resources/api.txt</file>
     </qresource>
 </RCC>

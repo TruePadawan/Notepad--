@@ -1,16 +1,24 @@
 #include "qpastebin.h"
 #include <QFile>
 #include <QTextStream>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 QPasteBin::QPasteBin(QObject *parent) : QObject(parent)
 {
     manager = new QNetworkAccessManager(parent);
-    reply = nullptr;
+    pasteData = nullptr;
+    apiData = nullptr;
+
+    requestApi();
 }
 
 void QPasteBin::setUpPasting(QString code, QString name, PASTE_MODE mode)
 {
-    API_KEY = getApi();
+    if (API_KEY.isEmpty())
+    {
+        requestApi();
+    }
     _code = code;
     _mode = mode;
     _name = name;
@@ -31,31 +39,40 @@ void QPasteBin::paste()
 {
     QNetworkRequest req{QUrl("https://pastebin.com/api/api_post.php")};
     req.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
-    reply = manager->post(req, postData.toString(QUrl::FullyEncoded).toUtf8());
-    connect(reply,&QNetworkReply::finished,this,&QPasteBin::readData);
+    pasteData = manager->post(req, postData.toString(QUrl::FullyEncoded).toUtf8());
+    connect(pasteData,&QNetworkReply::finished,this,&QPasteBin::readPasteData);
 }
 
-void QPasteBin::readData()
+void QPasteBin::readPasteData()
 {
-    auto buffer = reply->readAll();
+    auto buffer = pasteData->readAll();
     val = QUrl::fromPercentEncoding(buffer);
     emit complete();
 }
 
-QString QPasteBin::getApi()
+void QPasteBin::readApiData()
 {
-    QFile key{":/resources/api.txt"};
-    if (!key.open(QIODevice::ReadOnly))
+    qDebug() << "READING API DATA...........";
+    if (apiData->error() != QNetworkReply::NoError)
     {
-        qDebug() << "Couldn't Access API file";
-        return "Couldn't Access API file";
+        qDebug() << "Error Retrieving KEY " << apiData->errorString();
+    }else
+    {
+        auto apiDataBuffer = apiData->readAll();
+        auto keyObject = QJsonDocument::fromJson(apiDataBuffer).object();
+        API_KEY = keyObject.value("key").toString();
+        qDebug() << "API DATA " << API_KEY;
     }
+    qDebug() << "FINISHED READING API DATA...........";
+    apiData = nullptr;
+}
 
-    QTextStream stream{&key};
-    auto api = stream.readLine();
-    qDebug() << api;
-    key.close();
-    return api;
+void QPasteBin::requestApi()
+{
+    QNetworkRequest API_REQ{QUrl{"https://notepad-proxy.herokuapp.com/api"}};
+    apiData = manager->get(API_REQ);
+    connect(apiData, &QNetworkReply::finished,this,&QPasteBin::readApiData);
+
 }
 
 QString QPasteBin::getLink()
@@ -65,6 +82,7 @@ QString QPasteBin::getLink()
 
 QPasteBin::~QPasteBin()
 {
-    delete reply;
     delete manager;
+    delete pasteData;
+    delete apiData;
 }

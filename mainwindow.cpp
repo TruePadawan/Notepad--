@@ -291,9 +291,6 @@ void MainWindow::on_tabWidget_currentChanged()
     currentFileName = tab->getFileName();
     currentFilePath = tab->getFilePath();
 
-    qDebug() << "Current Name: " << currentFileName;
-    qDebug() << "Current Path: " << currentFilePath;
-
     modifyWindowTitle();
     checkSaveState();
 }

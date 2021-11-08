@@ -1,5 +1,6 @@
 #include "customtabwidget.h"
 #include <QFile>
+#include <QDebug>
 
 CustomTabWidget::CustomTabWidget(QWidget *parent)
     :QTextEdit(parent){
@@ -31,7 +32,6 @@ CustomTabWidget::CustomTabWidget(const QString &filename, const QString &filepat
     {
         openFile(filePath);
     }
-    qDebug() << "Creating Custom Tab Widget";
 }
 
 void CustomTabWidget::openFile(QString filepath)

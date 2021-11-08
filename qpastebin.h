@@ -16,7 +16,8 @@ class QPasteBin : public QObject
 private:
     enum PASTE_MODE {PUBLIC=0,UNLISTED=1,PRIVATE=2};
     QNetworkAccessManager *manager;
-    QNetworkReply *reply;
+    QNetworkReply *pasteData;
+    QNetworkReply *apiData;
     QString API_KEY;
     QString _code;
     QString _name;
@@ -29,8 +30,10 @@ public:
     void setUpPasting(QString code, QString name="Untitled", PASTE_MODE mode=PUBLIC);
     void setUp();
     void paste();
-    void readData();
-    QString getApi();
+    void readPasteData();
+    void readApiData();
+    //QString getApi();
+    void requestApi();
     QString getLink();
     ~QPasteBin();
 
