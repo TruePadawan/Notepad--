@@ -14,26 +14,22 @@ class QPasteBin : public QObject
 {
     Q_OBJECT
 private:
-    enum PASTE_MODE {PUBLIC=0,UNLISTED=1,PRIVATE=2};
+    enum PASTE_EXPOSURE {PUBLIC=0,UNLISTED=1,PRIVATE=2}; // ENUM REPRESENTING THE VISIBILITY OF THE PASTE
     QNetworkAccessManager *manager;
-    QNetworkReply *pasteData;
-    QNetworkReply *apiData;
-    QString API_KEY;
-    QString _code;
-    QString _name;
-    PASTE_MODE _mode;
-    QUrlQuery postData;
-    QString val;
+    QNetworkReply *replyForPastedCode;
+    QNetworkReply *replyForApiRequest;
+    QUrlQuery urlContainingPasteData;
 
+    QString API_KEY;
+    QString linkToPastedCode;
 public:
     explicit QPasteBin(QObject *parent = nullptr);
-    void setUpPasting(QString code, QString name="Untitled", PASTE_MODE mode=PUBLIC);
-    void setUp();
+    bool setUpPasteData(QString code, QString pasteName="Untitled", PASTE_EXPOSURE visibility=PUBLIC);
+    void buildPasteLink();
+    void buildApiKey();
+    void requestApiKey();
+
     void paste();
-    void readPasteData();
-    void readApiData();
-    //QString getApi();
-    void requestApi();
     QString getLink();
     ~QPasteBin();
 

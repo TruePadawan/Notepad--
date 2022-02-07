@@ -7,82 +7,74 @@
 QPasteBin::QPasteBin(QObject *parent) : QObject(parent)
 {
     manager = new QNetworkAccessManager(parent);
-    pasteData = nullptr;
-    apiData = nullptr;
+//    replyForPastedCode = nullptr;
+//    replyForApiRequest = nullptr;
 
-    requestApi();
+    requestApiKey();
 }
 
-void QPasteBin::setUpPasting(QString code, QString name, PASTE_MODE mode)
+bool QPasteBin::setUpPasteData(QString code, QString pasteName, PASTE_EXPOSURE visibility)
 {
     if (API_KEY.isEmpty())
     {
-        requestApi();
+        requestApiKey();
+        return false;
     }
-    _code = code;
-    _mode = mode;
-    _name = name;
-    setUp();
-}
 
-void QPasteBin::setUp()
-{
-    postData.addQueryItem("api_dev_key",API_KEY);
-    postData.addQueryItem("api_paste_code",_code);
-    postData.addQueryItem("api_option", "paste");
-    postData.addQueryItem("api_paste_private",QString::number(_mode));
-    postData.addQueryItem("api_paste_name",_name);
-    postData.addQueryItem("api_paste_format","cpp");
+    urlContainingPasteData.addQueryItem("api_dev_key",API_KEY);
+    urlContainingPasteData.addQueryItem("api_paste_code",code);
+    urlContainingPasteData.addQueryItem("api_option", "paste");
+    urlContainingPasteData.addQueryItem("api_paste_private",QString::number(visibility));
+    urlContainingPasteData.addQueryItem("api_paste_name",pasteName);
+    urlContainingPasteData.addQueryItem("api_paste_format","cpp");
+    return true;
 }
 
 void QPasteBin::paste()
 {
-    QNetworkRequest req{QUrl("https://pastebin.com/api/api_post.php")};
-    req.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
-    pasteData = manager->post(req, postData.toString(QUrl::FullyEncoded).toUtf8());
-    connect(pasteData,&QNetworkReply::finished,this,&QPasteBin::readPasteData);
+    QNetworkRequest apiRequestDestination{QUrl("https://pastebin.com/api/api_post.php")};
+    apiRequestDestination.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
+
+    replyForPastedCode = manager->post(apiRequestDestination, urlContainingPasteData.toString(QUrl::FullyEncoded).toUtf8());
+    connect(replyForPastedCode,&QNetworkReply::finished,this,&QPasteBin::buildPasteLink);
 }
 
-void QPasteBin::readPasteData()
+void QPasteBin::buildPasteLink()
 {
-    auto buffer = pasteData->readAll();
-    val = QUrl::fromPercentEncoding(buffer);
+    auto pasteLinkData = replyForPastedCode->readAll();
+    linkToPastedCode = QUrl::fromPercentEncoding(pasteLinkData);
     emit complete();
 }
 
-void QPasteBin::readApiData()
+void QPasteBin::buildApiKey()
 {
-    qDebug() << "READING API DATA...........";
-    if (apiData->error() != QNetworkReply::NoError)
+    if (replyForApiRequest->error() != QNetworkReply::NoError)
     {
-        qDebug() << "Error Retrieving KEY " << apiData->errorString();
-    }else
-    {
-        auto apiDataBuffer = apiData->readAll();
-        auto keyObject = QJsonDocument::fromJson(apiDataBuffer).object();
-        API_KEY = keyObject.value("key").toString();
-        qDebug() << "API DATA " << API_KEY;
+        qDebug() << "Error Retrieving KEY " << replyForApiRequest->errorString();
+        return;
     }
-    qDebug() << "FINISHED READING API DATA...........";
-    apiData = nullptr;
+
+    auto apiKeyData = replyForApiRequest->readAll();
+    auto keyObject = QJsonDocument::fromJson(apiKeyData).object();
+    API_KEY = keyObject.value("key").toString();
+
+    replyForApiRequest->deleteLater(); // SCHEDULE THE NETWORK REPLY FOR DELETION
 }
 
-void QPasteBin::requestApi()
+void QPasteBin::requestApiKey()
 {
     QNetworkRequest API_REQ{QUrl{"https://notepad-proxy.herokuapp.com/api"}};
-    apiData = manager->get(API_REQ);
-    connect(apiData, &QNetworkReply::finished,this,&QPasteBin::readApiData);
+    replyForApiRequest = manager->get(API_REQ);
+    connect(replyForApiRequest, &QNetworkReply::finished,this,&QPasteBin::buildApiKey);
 
 }
 
 QString QPasteBin::getLink()
 {
-    return val;
+    return linkToPastedCode;
 }
 
 QPasteBin::~QPasteBin()
 {
-    delete manager;
-    delete pasteData;
-    delete apiData;
+    delete replyForPastedCode;
 }
