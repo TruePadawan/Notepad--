@@ -123,7 +123,7 @@ void MainWindow::fileClicked()
         {
             if (!checkFileCollision(model->filePath(currentIndex)))
             {
-                auto * tab = new CustomTextEdit(model->fileName(currentIndex),model->filePath(currentIndex),this);
+                auto * tab = new CustomTextEdit(model->filePath(currentIndex),this);
                 int index = ui->tabWidget->addTab(tab,tab->getFileName());
                 ui->tabWidget->setCurrentIndex(index);
             }
@@ -192,12 +192,15 @@ void MainWindow::actionExit_triggered()
 void MainWindow::actionOpen_File_triggered()
 {
     QString file = QFileDialog::getOpenFileName(this);
+
     if (file.isNull())
         return;
+
     if (checkFileCollision(file))
         return;
+
     QFileInfo info{file};
-    auto * tab = new CustomTextEdit(info.fileName(),file,this);
+    auto * tab = new CustomTextEdit(file,this);
     saveMechanism(tab);
     auto index = ui->tabWidget->addTab(tab, info.fileName());
     ui->tabWidget->setCurrentIndex(index);

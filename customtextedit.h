@@ -11,7 +11,7 @@ class CustomTextEdit : public QTextEdit
     Q_OBJECT
 public:
     CustomTextEdit(QWidget * parent = nullptr);
-    CustomTextEdit(const QString &filename, const QString &filepath, QWidget * parent = nullptr);
+    CustomTextEdit(const QString &filepath, QWidget * parent = nullptr);
     void openFile(QString filepath);
     void save();
     void saveAs();
@@ -24,7 +24,7 @@ protected:
     QString fileName;
     QString filePath;
     Highlighter highlighterObject;
-    bool saveState;
+    bool saveState{true};
 };
 
 #endif // CUSTOMTEXTEDIT_H

@@ -6,23 +6,19 @@ CustomTextEdit::CustomTextEdit(QWidget *parent)
     :QTextEdit(parent){
     fileName = "Untitled";
     filePath = QString();
-    saveState = true;
-    //rule.setDocument(this->document());
+
     this->setFont(QFont("Fira Code Medium"));
-    //this->setFontWeight(QFont::Bold);
     this->setFontPointSize(10);
     this->setStyleSheet("background-color: rgb(42, 42, 42); color: white;");
 }
 
-CustomTextEdit::CustomTextEdit(const QString &filename, const QString &filepath, QWidget *parent)
+CustomTextEdit::CustomTextEdit(const QString &filepath, QWidget *parent)
     :QTextEdit(parent){
     this->setStyleSheet("background-color: rgb(42, 42, 42); color: white;");
     this->setFont(QFont("Fira Code Medium"));
     this->setFontPointSize(10);
 
-    fileName = QString();
     filePath = filepath;
-    saveState = true;
 
     QFileInfo fileInfo{filePath};
 
@@ -30,10 +26,7 @@ CustomTextEdit::CustomTextEdit(const QString &filename, const QString &filepath,
     if (fileInfo.suffix() == "cpp" || fileInfo.suffix() == "h")
         highlighterObject.setDocument(this->document());
 
-    if (!filename.isEmpty())
-    {
-        openFile(filePath);
-    }
+    openFile(filePath);
 }
 
 void CustomTextEdit::openFile(QString filepath)
