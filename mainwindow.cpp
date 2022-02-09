@@ -40,7 +40,7 @@ void MainWindow::modifyWindowTitle()
 
 void MainWindow::checkSaveState()
 {
-    auto tab = qobject_cast<CustomTabWidget *>(ui->tabWidget->currentWidget());
+    auto tab = qobject_cast<CustomTextEdit *>(ui->tabWidget->currentWidget());
     if (!tab->saved())
     {
         setWindowModified(true);
@@ -62,7 +62,7 @@ bool MainWindow::allSaved()
 {
     for (int i = 0; i < ui->tabWidget->count(); i++)
     {
-        auto tab = qobject_cast<CustomTabWidget *>(ui->tabWidget->widget(i));
+        auto tab = qobject_cast<CustomTextEdit *>(ui->tabWidget->widget(i));
         if (!tab->saved())
         {
             return false;
@@ -71,28 +71,28 @@ bool MainWindow::allSaved()
     return true;
 }
 
-void MainWindow::saveMechanism(CustomTabWidget *cust)
+void MainWindow::saveMechanism(CustomTextEdit *cust)
 {
-    connect(cust, &CustomTabWidget::undoAvailable, [=] (bool val){
+    connect(cust, &CustomTextEdit::undoAvailable, [=] (bool val){
         ui->actionUndo->setEnabled(val);
     });
 
-    connect(cust, &CustomTabWidget::redoAvailable, [=] (bool val){
+    connect(cust, &CustomTextEdit::redoAvailable, [=] (bool val){
         ui->actionRedo->setEnabled(val);
     });
 
-    connect(cust, &CustomTabWidget::copyAvailable, [=] (bool val){
+    connect(cust, &CustomTextEdit::copyAvailable, [=] (bool val){
         ui->actionCopy->setEnabled(val);
     });
 
-    connect(cust, &CustomTabWidget::textChanged, this, &MainWindow::textEdit_Modified);
+    connect(cust, &CustomTextEdit::textChanged, this, &MainWindow::textEdit_Modified);
 }
 
 void MainWindow::printFiles()
 {
     for (int i = 0; i < ui->tabWidget->count(); i++)
     {
-        auto tab = qobject_cast<CustomTabWidget *>(ui->tabWidget->widget(i));
+        auto tab = qobject_cast<CustomTextEdit *>(ui->tabWidget->widget(i));
         qDebug() << "Filename: " << tab->getFileName();
         qDebug() << "Filepath: " << tab->getFilePath();
     }
@@ -123,7 +123,7 @@ void MainWindow::fileClicked()
         {
             if (!checkFileCollision(model->filePath(currentIndex)))
             {
-                auto * tab = new CustomTabWidget(model->fileName(currentIndex),model->filePath(currentIndex),this);
+                auto * tab = new CustomTextEdit(model->fileName(currentIndex),model->filePath(currentIndex),this);
                 int index = ui->tabWidget->addTab(tab,tab->getFileName());
                 ui->tabWidget->setCurrentIndex(index);
             }
@@ -135,7 +135,7 @@ bool MainWindow::checkFileCollision(QString file)
 {
     for (int i = 0; i < ui->tabWidget->count(); i++)
     {
-        auto tab = qobject_cast<CustomTabWidget *>(ui->tabWidget->widget(i));
+        auto tab = qobject_cast<CustomTextEdit *>(ui->tabWidget->widget(i));
         if (tab->getFilePath() == file)
         {
             return true;
@@ -167,7 +167,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::actionNew_File_triggered()
 {
-    auto * tab = new CustomTabWidget(this);
+    auto * tab = new CustomTextEdit(this);
     ui->tabWidget->addTab(tab,"Untitled");
     saveMechanism(tab);
 
@@ -197,7 +197,7 @@ void MainWindow::actionOpen_File_triggered()
     if (checkFileCollision(file))
         return;
     QFileInfo info{file};
-    auto * tab = new CustomTabWidget(info.fileName(),file,this);
+    auto * tab = new CustomTextEdit(info.fileName(),file,this);
     saveMechanism(tab);
     auto index = ui->tabWidget->addTab(tab, info.fileName());
     ui->tabWidget->setCurrentIndex(index);
@@ -206,7 +206,7 @@ void MainWindow::actionOpen_File_triggered()
 
 void MainWindow::textEdit_Modified()
 {
-    auto tab = qobject_cast<CustomTabWidget *>(ui->tabWidget->currentWidget());
+    auto tab = qobject_cast<CustomTextEdit *>(ui->tabWidget->currentWidget());
     if (tab != nullptr)
     {
         tab->setSaveState(false);
@@ -219,7 +219,7 @@ void MainWindow::textEdit_Modified()
 
 void MainWindow::actionSave_File_triggered()
 {
-    auto tab = qobject_cast<CustomTabWidget *>(ui->tabWidget->currentWidget());
+    auto tab = qobject_cast<CustomTextEdit *>(ui->tabWidget->currentWidget());
     if (tab == nullptr)
         return;
     tab->save();
@@ -235,7 +235,7 @@ void MainWindow::actionSave_File_triggered()
 
 void MainWindow::actionSave_As_triggered()
 {
-    auto tab = qobject_cast<CustomTabWidget *>(ui->tabWidget->currentWidget());
+    auto tab = qobject_cast<CustomTextEdit *>(ui->tabWidget->currentWidget());
     if (tab == nullptr)
         return;
     tab->saveAs();
@@ -251,7 +251,7 @@ void MainWindow::actionSave_As_triggered()
 
 void MainWindow::actionClose_File_triggered()
 {
-    auto tab = qobject_cast<CustomTabWidget *>(ui->tabWidget->currentWidget());
+    auto tab = qobject_cast<CustomTextEdit *>(ui->tabWidget->currentWidget());
     if (tab == nullptr)
         return;
 
@@ -286,8 +286,8 @@ void MainWindow::on_actionNew_File_2_triggered()
 
 void MainWindow::on_tabWidget_currentChanged()
 {
-    //currentTextEdit = qobject_cast<CustomTabWidget *>(ui->tabWidget->currentWidget());
-    auto tab = qobject_cast<CustomTabWidget *>(ui->tabWidget->currentWidget());
+    //currentTextEdit = qobject_cast<CustomTextEdit *>(ui->tabWidget->currentWidget());
+    auto tab = qobject_cast<CustomTextEdit *>(ui->tabWidget->currentWidget());
     currentFileName = tab->getFileName();
     currentFilePath = tab->getFilePath();
 
@@ -328,35 +328,35 @@ void MainWindow::on_actionExit_2_triggered()
 
 void MainWindow::on_actionUndo_triggered()
 {
-    auto tab = qobject_cast<CustomTabWidget *>(ui->tabWidget->currentWidget());
+    auto tab = qobject_cast<CustomTextEdit *>(ui->tabWidget->currentWidget());
     tab->undo();
 }
 
 
 void MainWindow::on_actionRedo_triggered()
 {
-    auto tab = qobject_cast<CustomTabWidget *>(ui->tabWidget->currentWidget());
+    auto tab = qobject_cast<CustomTextEdit *>(ui->tabWidget->currentWidget());
     tab->redo();
 }
 
 
 void MainWindow::on_actionCut_triggered()
 {
-    auto tab = qobject_cast<CustomTabWidget *>(ui->tabWidget->currentWidget());
+    auto tab = qobject_cast<CustomTextEdit *>(ui->tabWidget->currentWidget());
     tab->cut();
 }
 
 
 void MainWindow::on_actionCopy_triggered()
 {
-    auto tab = qobject_cast<CustomTabWidget *>(ui->tabWidget->currentWidget());
+    auto tab = qobject_cast<CustomTextEdit *>(ui->tabWidget->currentWidget());
     tab->copy();
 }
 
 
 void MainWindow::on_actionPaste_triggered()
 {
-    auto tab = qobject_cast<CustomTabWidget *>(ui->tabWidget->currentWidget());
+    auto tab = qobject_cast<CustomTextEdit *>(ui->tabWidget->currentWidget());
     tab->paste();
 }
 
@@ -383,7 +383,7 @@ void MainWindow::on_actionAbout_triggered()
 
 void MainWindow::on_actionFont_triggered()
 {
-    auto tab = qobject_cast<CustomTabWidget *>(ui->tabWidget->currentWidget());
+    auto tab = qobject_cast<CustomTextEdit *>(ui->tabWidget->currentWidget());
     tab->setFont(QFontDialog::getFont(0, tab->font()));
 }
 
@@ -431,14 +431,19 @@ void MainWindow::on_actionOpen_Folder_triggered()
 
 void MainWindow::on_actionPaste_to_Pastebin_triggered()
 {
-    auto tab = qobject_cast<CustomTabWidget *>(ui->tabWidget->currentWidget());
+    auto tab = qobject_cast<CustomTextEdit *>(ui->tabWidget->currentWidget());
     if (!tab->toPlainText().isEmpty())
     {
-        pasteBin->setUpPasting(tab->toPlainText());
-        pasteBin->paste();
-        connect(pasteBin,&QPasteBin::complete,[&]{
-            edit.setText(pasteBin->getLink());
-        });
+        if (pasteBin->setUpPasteData(tab->toPlainText()))
+        {
+            pasteBin->paste();
+            connect(pasteBin,&QPasteBin::complete,[&]{
+                edit.setText(pasteBin->getLink());
+            });
+        }else
+        {
+            edit.setText("Couldn't set up paste data");
+        }
     }
 }
 

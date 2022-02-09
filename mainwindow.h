@@ -8,7 +8,7 @@
 #include <QCloseEvent>
 #include <QLineEdit>
 #include <highlighter.h>
-#include <customtabwidget.h>
+#include <customtextedit.h>
 #include <qpastebin.h>
 
 QT_BEGIN_NAMESPACE
@@ -24,7 +24,7 @@ public:
     void modifyWindowTitle();
     void checkSaveState();
     bool allSaved();
-    void saveMechanism(CustomTabWidget *cust);
+    void saveMechanism(CustomTextEdit *cust);
     void printFiles();
     void configureFolderView();
     void fileClicked();
