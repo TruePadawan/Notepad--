@@ -7,8 +7,8 @@
 QPasteBin::QPasteBin(QObject *parent) : QObject(parent)
 {
     manager = new QNetworkAccessManager(parent);
-//    replyForPastedCode = nullptr;
-//    replyForApiRequest = nullptr;
+    replyForPastedCode = nullptr;
+    replyForApiRequest = nullptr;
 
     requestApiKey();
 }
@@ -63,10 +63,9 @@ void QPasteBin::buildApiKey()
 
 void QPasteBin::requestApiKey()
 {
-    QNetworkRequest API_REQ{QUrl{"https://notepad-proxy.herokuapp.com/api"}};
-    replyForApiRequest = manager->get(API_REQ);
+    QNetworkRequest apiKeyRequestDestination{QUrl{"https://notepad-proxy.herokuapp.com/api"}};
+    replyForApiRequest = manager->get(apiKeyRequestDestination);
     connect(replyForApiRequest, &QNetworkReply::finished,this,&QPasteBin::buildApiKey);
-
 }
 
 QString QPasteBin::getLink()
