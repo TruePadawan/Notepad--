@@ -3,11 +3,11 @@
 ![Qt](https://img.shields.io/badge/Qt-%23217346.svg?style=for-the-badge&logo=Qt&logoColor=white)
 ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white)
 
-<strong>A simple text-editor built using Qt/C++</strong>
+<strong>A basic text-editor being built using Qt/C++</strong>
 ![image](https://user-images.githubusercontent.com/71678062/136006511-5c42e13d-1afe-4b6f-ba53-21ee1824de48.png)
-## Logs
-* Supports syntax highlighting for Qt/C++
-* Pastebin plugin added
+
+## Update
+* I plan to completely rewrite most of the application because it doesn't function properly and has poor design. For now I'm busy with web-development stuff.
 
 ## Notes
 <p>If you're building the program from source, you need to have OpenSSL installed on your computer, and it's bin directory in your Path(environment variables) or you can just add it scoped to the program itself if you don't want to put it directly into your system env variables</p>
