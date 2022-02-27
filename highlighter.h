@@ -10,7 +10,7 @@ class Highlighter :public QSyntaxHighlighter
     Q_OBJECT
 public:
     Highlighter(QTextDocument *parent = 0);
-    ~Highlighter();
+//    ~Highlighter();
 protected:
     void highlightBlock(const QString &text) override;
 
@@ -20,13 +20,14 @@ private:
         QRegularExpression pattern;
         QTextCharFormat format;
     };
-    QList<HighlightingRule> highlightingRules;
+
+    QList<HighlightingRule> highlightingRulesList;
 
     QRegularExpression commentStartExpression;
     QRegularExpression commentEndExpression;
 
-    QTextCharFormat keywordFormat;
-    QTextCharFormat classFormat;
+    QTextCharFormat cppKeywordFormat;
+    QTextCharFormat QtClassFormat;
     QTextCharFormat singleLineCommentFormat;
     QTextCharFormat multiLineCommentFormat;
     QTextCharFormat quotationFormat;
