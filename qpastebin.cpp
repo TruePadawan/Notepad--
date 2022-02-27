@@ -54,6 +54,7 @@ void QPasteBin::buildApiKey()
         return;
     }
 
+    /* Read the data gotten from the API Key request and retrieve the key from the JSON Object */
     auto apiKeyData = replyForApiRequest->readAll();
     auto keyObject = QJsonDocument::fromJson(apiKeyData).object();
     API_KEY = keyObject.value("key").toString();
