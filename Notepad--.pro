@@ -12,14 +12,18 @@ SOURCES += \
     customtextedit.cpp \
     highlighter.cpp \
     main.cpp \
+    maincontroller.cpp \
     mainwindow.cpp \
-    qpastebin.cpp
+    qpastebin.cpp \
+    tabwidget.cpp
 
 HEADERS += \
     customtextedit.h \
     highlighter.h \
+    maincontroller.h \
     mainwindow.h \
-    qpastebin.h
+    qpastebin.h \
+    tabwidget.h
 
 FORMS += \
     mainwindow.ui
