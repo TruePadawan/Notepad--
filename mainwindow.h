@@ -10,6 +10,9 @@
 #include <highlighter.h>
 #include <customtextedit.h>
 #include <qpastebin.h>
+#include <QComboBox>
+#include <QMenu>
+#include <QMenuBar>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -93,4 +96,7 @@ private:
     QString lastFolderOpened;
     QLineEdit edit;
     QPasteBin *pasteBin;
+    QComboBox langBox;
+    QMenuBar langMenuBar;
+    QMenu langMenu;
 };

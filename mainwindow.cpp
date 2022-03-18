@@ -10,15 +10,19 @@
 #include <QFileInfo>
 #include <QVBoxLayout>
 
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     actionNew_File_triggered();
-    ui->treeView->setVisible(false);
-    ui->statusBar->addPermanentWidget(&edit);
+    ui->statusBar->addWidget(&edit);
+    ui->statusBar->addPermanentWidget(&langBox);
+
+    langBox.setStyleSheet("background-color: black; color: white;");
+    langBox.addItem("C++");
+    langBox.addItem("Qt/C++");
+    langBox.addItem("Plain Text");
     pasteBin = new QPasteBin(ui->menuBar);
     configureFolderView();
 }
