@@ -3,35 +3,42 @@
 MainController::MainController(QObject *parent)
     : QObject{parent}
 {
-
+    qDebug() << "Main Controller created!";
 }
 
-TabWidget *MainController::newTabWidget(QWidget *parent)
+CustomTextEdit *MainController::newWidget(QWidget *parent)
 {
-    tabWidget = new TabWidget(parent);
-    return tabWidget;
+    widget = new CustomTextEdit(parent);
+    return widget;
 }
 
-TabWidget *MainController::newTabWidget(QFile &file, QWidget *parent)
+CustomTextEdit *MainController::newWidget(QString &filePath, QWidget *parent)
 {
-    tabWidget = new TabWidget(file, parent);
-    return tabWidget;
+    QFile file{filePath};
+
+    widget = new CustomTextEdit(file, parent);
+    return widget;
 }
 
 void MainController::save()
 {
-    tabWidget->save();
+    widget->save();
 }
 
 void MainController::saveAs()
 {
-    tabWidget->saveAs();
+    widget->saveAs();
 }
 
-void MainController::setCurrentTabWidget(TabWidget *widget)
+void MainController::setCurrentWidget(CustomTextEdit *widget)
 {
-    tabWidget->setFileNameAndPath(widget->getFileName(),widget->getFilePath());
-    tabWidget->setFileType(widget->getFileType());
-    tabWidget->setIsTextEditDataSaved(widget->getIsTextEditDataSaved());
-    tabWidget->setText(widget->toPlainText());
+    widget->setFileNameAndPath(widget->getFileName(),widget->getFilePath());
+    widget->setFileType(widget->getFileType());
+    widget->setIsTextEditDataSaved(widget->getIsTextEditDataSaved());
+    widget->setText(widget->toPlainText());
+}
+
+MainController::~MainController()
+{
+    qDebug() << "Destroying controller";
 }

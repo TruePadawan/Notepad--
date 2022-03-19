@@ -14,16 +14,14 @@ SOURCES += \
     main.cpp \
     maincontroller.cpp \
     mainwindow.cpp \
-    qpastebin.cpp \
-    tabwidget.cpp
+    qpastebin.cpp
 
 HEADERS += \
     customtextedit.h \
     highlighter.h \
     maincontroller.h \
     mainwindow.h \
-    qpastebin.h \
-    tabwidget.h
+    qpastebin.h
 
 FORMS += \
     mainwindow.ui
@@ -35,5 +33,3 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     resource.qrc
-
-RC_ICONS = resources/notepad.ico

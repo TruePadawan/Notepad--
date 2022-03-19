@@ -1,37 +1,29 @@
 #include "customtextedit.h"
-#include <QFile>
-#include <QDebug>
+#include <QFileInfo>
+#include <QFileDialog>
 
-CustomTextEdit::CustomTextEdit(QWidget *parent)
-    :QTextEdit(parent){
-    fileName = "Untitled";
-    filePath = QString();
-
-    this->setFont(QFont("Fira Code Medium"));
-    this->setFontPointSize(10);
-    this->setStyleSheet("background-color: rgb(42, 42, 42); color: white;");
-}
-
-CustomTextEdit::CustomTextEdit(const QString &filepath, QWidget *parent)
-    :QTextEdit(parent){
-    this->setStyleSheet("background-color: rgb(42, 42, 42); color: white;");
-    this->setFont(QFont("Fira Code Medium"));
-    this->setFontPointSize(10);
-
-    filePath = filepath;
-
-    QFileInfo fileInfo{filePath};
-
-    /* Add syntax highlighting if the file is a C++ file */
-    if (fileInfo.suffix() == "cpp" || fileInfo.suffix() == "h")
-        highlighterObject.setDocument(this->document());
-
-    openFile(filePath);
-}
-
-void CustomTextEdit::openFile(QString filepath)
+CustomTextEdit::CustomTextEdit(QWidget *parent): QTextEdit{parent}
 {
-    QFile file(filepath);
+    setFileNameAndPath("Untitled");
+    configureTextEdit();
+}
+
+CustomTextEdit::CustomTextEdit(QFile &file, QWidget *parent) :QTextEdit{parent}
+{
+    configureTextEdit();
+
+    loadTextFromFile(file);
+}
+
+void CustomTextEdit::configureTextEdit()
+{
+    this->setFont(QFont("Fira Code Medium"));
+    this->setFontPointSize(10);
+    this->setStyleSheet("background-color: rgb(42, 42, 42); color: white;");
+}
+
+void CustomTextEdit::loadTextFromFile(QFile &file)
+{
     if (!file.exists())
         return;
     if (!file.open(QIODevice::ReadOnly))
@@ -40,14 +32,21 @@ void CustomTextEdit::openFile(QString filepath)
         return;
     }
 
-    QTextStream streamFileData(&file);
-    QString fileTextContents = streamFileData.readAll();
-    this->setText(fileTextContents);
+    QTextStream readTextFromFile(&file);
+    this->setText(readTextFromFile.readAll());
 
-    QFileInfo info{filepath};
-    fileName = info.fileName();
+    QFileInfo info{file};
+
+    setFileNameAndPath(info.fileName(),info.filePath());
+    setFileType(info.suffix());
 
     file.close();
+}
+
+void CustomTextEdit::setFileNameAndPath(const QString &name, const QString &path)
+{
+    fileName = name;
+    filePath = path;
 }
 
 void CustomTextEdit::save()
@@ -56,25 +55,31 @@ void CustomTextEdit::save()
     if (!file.exists())
     {
         saveAs();
-    }else
+    }
+    else
     {
         if (!file.open(QFile::WriteOnly))
         {
-            qWarning() << "Save-Error : " << file.errorString();
+            qWarning() << "Error while saving : " << file.errorString();
             return;
         }
-        QTextStream stream{&file};
-        stream << this->toPlainText();
+
+        QTextStream writeTextToFile{&file};
+        writeTextToFile << this->toPlainText();
+
+        setIsTextEditDataSaved(true);
+
+        file.close();
     }
-    saveState = true;
-    file.close();
 }
 
 void CustomTextEdit::saveAs()
 {
-    QString savename = QFileDialog::getSaveFileName(this,tr("Save File As"),QString(),tr("Text File (*.txt);;C++ Files (*.cpp *.h)"));
+    QString savename = QFileDialog::getSaveFileName(nullptr,tr("Save File As"),QString(),tr("Text File (*.txt);;C++ Files (*.cpp *.h)"));
     if (!savename.isNull())
     {
+        qDebug() << savename;
+
         QFile file{savename};
         if (!file.open(QIODevice::WriteOnly))
         {
@@ -82,34 +87,61 @@ void CustomTextEdit::saveAs()
             return;
         }
 
-        QTextStream stream{&file};
-        stream << this->toPlainText();
+        QTextStream writeTextToFile{&file};
+        writeTextToFile << this->toPlainText();
+        setIsTextEditDataSaved(true);
 
         QFileInfo info{savename};
-        fileName = info.fileName();
-        filePath = savename;
+        setFileNameAndPath(info.fileName(),info.filePath());
+        setFileType(info.suffix());
 
         file.close();
-        saveState = true;
     }
 }
 
-bool CustomTextEdit::saved()
+void CustomTextEdit::setIsTextEditDataSaved(bool state)
 {
-    return saveState;
+    isTextEditDataSaved = state;
+    emit textEditDataSaved(state);
 }
 
-void CustomTextEdit::setSaveState(bool state)
+
+
+void CustomTextEdit::setFileType(const QString &fileExtension)
 {
-    saveState = state;
+    if (fileExtension == "h" || fileExtension == "cpp")
+    {
+        fileType = "cpp";
+    }
+    else if (fileExtension == "txt")
+    {
+        fileType = "txt";
+    }
+
+    emit fileTypeChanged(fileType);
 }
 
-QString CustomTextEdit::getFileName() const
+QString CustomTextEdit::getFileName()
 {
     return fileName;
 }
 
-QString CustomTextEdit::getFilePath() const
+QString CustomTextEdit::getFilePath()
 {
     return filePath;
+}
+
+QString CustomTextEdit::getFileType()
+{
+    return fileType;
+}
+
+bool CustomTextEdit::getIsTextEditDataSaved()
+{
+    return isTextEditDataSaved;
+}
+
+CustomTextEdit::~CustomTextEdit()
+{
+    qDebug() << "Deleting custom_textedit";
 }

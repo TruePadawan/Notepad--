@@ -1,30 +1,44 @@
 #ifndef CUSTOMTEXTEDIT_H
 #define CUSTOMTEXTEDIT_H
 
-#include <QTextEdit>
-#include <highlighter.h>
+#include <QObject>
 #include <QTextStream>
-#include <QFileDialog>
+#include <QTextEdit>
+#include <QFile>
+#include <highlighter.h>
 
 class CustomTextEdit : public QTextEdit
 {
     Q_OBJECT
 public:
-    CustomTextEdit(QWidget * parent = nullptr);
-    CustomTextEdit(const QString &filepath, QWidget * parent = nullptr);
-    void openFile(QString filepath);
+    explicit CustomTextEdit(QWidget *parent = nullptr);
+    CustomTextEdit(QFile &file, QWidget *parent);
+
+    void loadTextFromFile(QFile &file);
     void save();
     void saveAs();
-    bool saved();
-    void setSaveState(bool state);
-    QString getFileName() const;
-    QString getFilePath() const;
+    void configureTextEdit();
 
-protected:
+    void setFileType(const QString &fileExtension);
+    void setIsTextEditDataSaved(bool state);
+    void setFileNameAndPath(const QString &name, const QString &path = QString());
+
+    QString getFileName();
+    QString getFilePath();
+    QString getFileType();
+    bool getIsTextEditDataSaved();
+    ~CustomTextEdit();
+
+private:
     QString fileName;
     QString filePath;
+    QString fileType;
+    bool isTextEditDataSaved{true};
     Highlighter highlighterObject;
-    bool saveState{true};
+
+signals:
+    void textEditDataSaved(bool saved);
+    void fileTypeChanged(QString fileType);
 };
 
 #endif // CUSTOMTEXTEDIT_H

@@ -4,26 +4,27 @@
 #include <QObject>
 #include <QFile>
 #include <QString>
-#include "tabwidget.h"
+#include "customtextedit.h"
 
 class MainController : public QObject
 {
     Q_OBJECT
 public:
-    explicit MainController(QObject *parent = nullptr);
-    TabWidget *newTabWidget(QWidget *parent=nullptr);
-    TabWidget *newTabWidget(QFile &file, QWidget *parent=nullptr);
+    explicit MainController(QObject *parent=nullptr);
+    CustomTextEdit *newWidget(QWidget *parent=nullptr);
+    CustomTextEdit *newWidget(QString &filePath, QWidget *parent=nullptr);
     void save();
     void saveAs();
-    void setCurrentTabWidget(TabWidget *widget);
+    void setCurrentWidget(CustomTextEdit *widget);
+    ~MainController();
 
 private:
-    TabWidget *tabWidget;
-    bool isCurrentTabWidgetDataSaved{true};
+    CustomTextEdit *widget;
+    bool isCurrentWidgetDataSaved{true};
 
 signals:
-    void tabWidgetChanged();
-    void tabWidgetTextChanged(bool isModified);
+    void widgetChanged();
+    void widgetTextChanged(bool isModified);
 
 };
 
