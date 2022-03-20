@@ -37,17 +37,23 @@ void MainController::setCurrentWidget(CustomTextEdit *_widget)
         this->widget = _widget;
     }
 
+    auto fileNameAndType = getNameAndTypeOfFile(_widget);
+    emit widgetChanged(fileNameAndType);
+}
+
+QHash<QString, QString> MainController::getNameAndTypeOfFile(CustomTextEdit *_widget)
+{
     QString nameOfFileInCurrentTab = _widget->getFileName();
 
     QString newWindowTitle{QString("Notepad-- (%1)").arg(nameOfFileInCurrentTab)};
 
     QString typeOfFileInCurrentTab = _widget->getFileType() == "txt" ? "Plain Text" : "C++";
 
-    QHash <QString,QString> titleAndFileType;
-    titleAndFileType["title"] = newWindowTitle;
-    titleAndFileType["fileType"] = typeOfFileInCurrentTab;
+    QHash <QString,QString> fileNameAndType;
+    fileNameAndType["fileName"] = newWindowTitle;
+    fileNameAndType["fileType"] = typeOfFileInCurrentTab;
 
-    emit widgetChanged(titleAndFileType);
+    return fileNameAndType;
 }
 
 MainController::~MainController()

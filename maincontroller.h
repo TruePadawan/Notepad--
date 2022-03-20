@@ -22,6 +22,7 @@ public:
 private:
     CustomTextEdit *widget;
     bool isCurrentWidgetDataSaved{true};
+    QHash<QString,QString> getNameAndTypeOfFile(CustomTextEdit *_widget);
 
 signals:
     void widgetChanged(QHash<QString,QString>);
