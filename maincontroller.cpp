@@ -30,12 +30,24 @@ void MainController::saveAs()
     widget->saveAs();
 }
 
-void MainController::setCurrentWidget(CustomTextEdit *widget)
+void MainController::setCurrentWidget(CustomTextEdit *_widget)
 {
-    widget->setFileNameAndPath(widget->getFileName(),widget->getFilePath());
-    widget->setFileType(widget->getFileType());
-    widget->setIsTextEditDataSaved(widget->getIsTextEditDataSaved());
-    widget->setText(widget->toPlainText());
+    if (this->widget != _widget)
+    {
+        this->widget = _widget;
+    }
+
+    QString currentTabWidgetTitle = _widget->getFileName();
+
+    QString newWindowTitle{QString("Notepad-- (%1)").arg(currentTabWidgetTitle)};
+
+    QString currentTabWidgetFileType = _widget->getFileType() == "txt" ? "Plain Text" : "C++";
+
+    QHash <QString,QString> titleAndFileType;
+    titleAndFileType["title"] = newWindowTitle;
+    titleAndFileType["fileType"] = currentTabWidgetFileType;
+
+    emit widgetChanged(titleAndFileType);
 }
 
 MainController::~MainController()

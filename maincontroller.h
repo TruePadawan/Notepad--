@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QFile>
 #include <QString>
+#include <QHash>
 #include "customtextedit.h"
 
 class MainController : public QObject
@@ -15,7 +16,7 @@ public:
     CustomTextEdit *newWidget(QString &filePath, QWidget *parent=nullptr);
     void save();
     void saveAs();
-    void setCurrentWidget(CustomTextEdit *widget);
+    void setCurrentWidget(CustomTextEdit *_widget);
     ~MainController();
 
 private:
@@ -23,7 +24,7 @@ private:
     bool isCurrentWidgetDataSaved{true};
 
 signals:
-    void widgetChanged();
+    void widgetChanged(QHash<QString,QString>);
     void widgetTextChanged(bool isModified);
 
 };
