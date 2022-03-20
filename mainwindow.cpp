@@ -11,15 +11,17 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     setWindowIcon(QIcon(":/resources/notepad.ico"));
 
-    fileTypeComboBox = new QComboBox{ui->statusBar};
+    syntaxComboBox = new QComboBox{ui->statusBar};
     pastebinLinkLineEdit = new QLineEdit{ui->statusBar};
     controller = new MainController(this);
 
     setupStatusBarWidgets();
     setupStatusBar();
+
     connectSignalsToSlotsForMenuBar();
     connectSignalsToSlotsForTabWidget();
     connectSignalsToSlotsForController();
+    connectSignalsToSlotsForComboBox();
 }
 
 void MainWindow::setupStatusBarWidgets()
@@ -27,14 +29,14 @@ void MainWindow::setupStatusBarWidgets()
     pastebinLinkLineEdit->setReadOnly(true);
     pastebinLinkLineEdit->setMaximumWidth(150);
 
-    fileTypeComboBox->addItem("Plain Text");
-    fileTypeComboBox->addItem("C++");
+    syntaxComboBox->addItem("Plain Text");
+    syntaxComboBox->addItem("C++");
 }
 
 void MainWindow::setupStatusBar()
 {
     ui->statusBar->addWidget(pastebinLinkLineEdit);
-    ui->statusBar->addPermanentWidget(fileTypeComboBox);
+    ui->statusBar->addPermanentWidget(syntaxComboBox);
 }
 
 void MainWindow::newTab(CustomTextEdit *widget) const
@@ -101,18 +103,20 @@ void MainWindow::connectSignalsToSlotsForTabWidget()
 
 void MainWindow::connectSignalsToSlotsForController()
 {
-    // CONNECTION FOR UPDATING THE WINDOW TITLE AND COMBO-BOX DISPLAYING FILE TYPE
-    connect(controller,&MainController::widgetChanged,this,[&] (QHash <QString,QString> titleAndFileType) {
-        setWindowTitle(titleAndFileType.value("fileName"));
+    // CONNECTION FOR UPDATING THE WINDOW TITLE AND COMBO-BOX DISPLAYING PREFFERED SYNTAX
+    connect(controller,&MainController::widgetChanged,this,[&] (QHash <QString,QString> titleAndPrefferedSyntax) {
+        setWindowTitle(titleAndPrefferedSyntax.value("fileName"));
 
-        fileTypeComboBox->setCurrentText(titleAndFileType.value("fileType"));
+        syntaxComboBox->setCurrentText(titleAndPrefferedSyntax.value("syntax"));
     });
 }
 
-//void MainWindow::connectSignalsToSlotsForComboBox()
-//{
-//    connect(fileTypeComboBox,&QComboBox::currentTextChanged,this,);
-//}
+void MainWindow::connectSignalsToSlotsForComboBox()
+{
+    connect(syntaxComboBox,&QComboBox::currentTextChanged,this,[&] (QString currentText) {
+        controller->updatePreferredSyntaxForTab(currentText);
+    });
+}
 
 bool MainWindow::isAnyTabModified()
 {

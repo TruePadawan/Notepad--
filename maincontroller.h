@@ -17,12 +17,13 @@ public:
     void save();
     void saveAs();
     void setCurrentWidget(CustomTextEdit *_widget);
+    void updatePreferredSyntaxForTab(const QString syntaxType);
     ~MainController();
 
 private:
     CustomTextEdit *widget;
     bool isCurrentWidgetDataSaved{true};
-    QHash<QString,QString> getNameAndTypeOfFile(CustomTextEdit *_widget);
+    QHash<QString,QString> getNameAndPreferredSyntax(CustomTextEdit *_widget);
 
 signals:
     void widgetChanged(QHash<QString,QString>);

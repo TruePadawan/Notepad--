@@ -112,13 +112,20 @@ void CustomTextEdit::setFileType(const QString &fileExtension)
     if (fileExtension == "h" || fileExtension == "cpp")
     {
         fileType = "cpp";
+        setPreferredSyntax("C++");
     }
     else if (fileExtension == "txt")
     {
         fileType = "txt";
+        setPreferredSyntax("Plain Text");
     }
 
     emit fileTypeChanged(fileType);
+}
+
+void CustomTextEdit::setPreferredSyntax(const QString &syntax)
+{
+    preferredSyntax = syntax;
 }
 
 QString CustomTextEdit::getFileName()
@@ -134,6 +141,11 @@ QString CustomTextEdit::getFilePath()
 QString CustomTextEdit::getFileType()
 {
     return fileType;
+}
+
+QString CustomTextEdit::getPreferredSyntax()
+{
+    return preferredSyntax;
 }
 
 bool CustomTextEdit::getIsTextEditDataSaved()

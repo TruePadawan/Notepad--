@@ -37,23 +37,28 @@ void MainController::setCurrentWidget(CustomTextEdit *_widget)
         this->widget = _widget;
     }
 
-    auto fileNameAndType = getNameAndTypeOfFile(_widget);
-    emit widgetChanged(fileNameAndType);
+    auto fileNameAndSyntax = getNameAndPreferredSyntax(_widget);
+    emit widgetChanged(fileNameAndSyntax);
 }
 
-QHash<QString, QString> MainController::getNameAndTypeOfFile(CustomTextEdit *_widget)
+void MainController::updatePreferredSyntaxForTab(const QString syntaxType)
+{
+    widget->setPreferredSyntax(syntaxType);
+}
+
+QHash<QString, QString> MainController::getNameAndPreferredSyntax(CustomTextEdit *_widget)
 {
     QString nameOfFileInCurrentTab = _widget->getFileName();
 
     QString newWindowTitle{QString("Notepad-- (%1)").arg(nameOfFileInCurrentTab)};
 
-    QString typeOfFileInCurrentTab = _widget->getFileType() == "txt" ? "Plain Text" : "C++";
+    QString prefferedSyntaxInCurrentTab = _widget->getPreferredSyntax();
 
-    QHash <QString,QString> fileNameAndType;
-    fileNameAndType["fileName"] = newWindowTitle;
-    fileNameAndType["fileType"] = typeOfFileInCurrentTab;
+    QHash <QString,QString> fileNameAndSyntax;
+    fileNameAndSyntax["fileName"] = newWindowTitle;
+    fileNameAndSyntax["syntax"] = prefferedSyntaxInCurrentTab;
 
-    return fileNameAndType;
+    return fileNameAndSyntax;
 }
 
 MainController::~MainController()

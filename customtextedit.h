@@ -19,13 +19,15 @@ public:
     void saveAs();
     void configureTextEdit();
 
-    void setFileType(const QString &fileExtension);
-    void setIsTextEditDataSaved(bool state);
     void setFileNameAndPath(const QString &name, const QString &path = QString());
+    void setFileType(const QString &fileExtension);
+    void setPreferredSyntax(const QString &syntax);
+    void setIsTextEditDataSaved(bool state);
 
     QString getFileName();
     QString getFilePath();
     QString getFileType();
+    QString getPreferredSyntax();
     bool getIsTextEditDataSaved();
     ~CustomTextEdit();
 
@@ -33,6 +35,7 @@ private:
     QString fileName;
     QString filePath;
     QString fileType;
+    QString preferredSyntax;
     bool isTextEditDataSaved{true};
     Highlighter highlighterObject;
 

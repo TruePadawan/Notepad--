@@ -28,7 +28,7 @@ public:
 private:
     Ui::MainWindow *ui;
     MainController *controller;
-    QComboBox *fileTypeComboBox;
+    QComboBox *syntaxComboBox;
     QLineEdit *pastebinLinkLineEdit;
 
     void sendCurrentTabToController(int indexOfCurrentTab);
