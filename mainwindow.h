@@ -31,9 +31,13 @@ private:
     QComboBox *fileTypeComboBox;
     QLineEdit *pastebinLinkLineEdit;
 
+    void sendCurrentTabToController(int indexOfCurrentTab);
+
     void connectSignalsToSlotsForMenuBar();
     void connectSignalsToSlotsForTabWidget();
     void connectSignalsToSlotsForController();
+    void connectSignalsToSlotsForComboBox();
+
     bool isAnyTabModified();
 };
 #endif // MAINWINDOW_H

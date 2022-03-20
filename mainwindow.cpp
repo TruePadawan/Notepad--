@@ -96,16 +96,7 @@ void MainWindow::connectSignalsToSlotsForMenuBar()
 
 void MainWindow::connectSignalsToSlotsForTabWidget()
 {
-    connect(ui->tabWidget,&QTabWidget::currentChanged,this,[&] (int currentTabWidgetIndex) {
-        CustomTextEdit *actualWidget = qobject_cast<CustomTextEdit *>(ui->tabWidget->widget(currentTabWidgetIndex));
-        if (actualWidget != nullptr)
-        {
-            controller->setCurrentWidget(actualWidget);
-        }else
-        {
-            qFatal("Casting Tab Widget to CustomTextEdit Failed!!!!");
-        }
-    });
+    connect(ui->tabWidget,&QTabWidget::currentChanged,this,&MainWindow::sendCurrentTabToController);
 }
 
 void MainWindow::connectSignalsToSlotsForController()
@@ -118,9 +109,26 @@ void MainWindow::connectSignalsToSlotsForController()
     });
 }
 
+//void MainWindow::connectSignalsToSlotsForComboBox()
+//{
+//    connect(fileTypeComboBox,&QComboBox::currentTextChanged,this,);
+//}
+
 bool MainWindow::isAnyTabModified()
 {
     return false;
+}
+
+void MainWindow::sendCurrentTabToController(int indexOfCurrentTab)
+{
+    CustomTextEdit *actualWidget = qobject_cast<CustomTextEdit *>(ui->tabWidget->widget(indexOfCurrentTab));
+    if (actualWidget != nullptr)
+    {
+        controller->setCurrentWidget(actualWidget);
+    }else
+    {
+        qFatal("Casting Tab Widget to CustomTextEdit Failed!!!!");
+    }
 }
 
 MainWindow::~MainWindow()
