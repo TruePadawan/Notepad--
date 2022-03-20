@@ -41,11 +41,11 @@ void MainController::setCurrentWidget(CustomTextEdit *_widget)
 
     QString newWindowTitle{QString("Notepad-- (%1)").arg(currentTabWidgetTitle)};
 
-    QString currentTabWidgetFileType = _widget->getFileType() == "txt" ? "Plain Text" : "C++";
+    QString currentWidgetFileType = _widget->getFileType() == "txt" ? "Plain Text" : "C++";
 
     QHash <QString,QString> titleAndFileType;
     titleAndFileType["title"] = newWindowTitle;
-    titleAndFileType["fileType"] = currentTabWidgetFileType;
+    titleAndFileType["fileType"] = currentWidgetFileType;
 
     emit widgetChanged(titleAndFileType);
 }
