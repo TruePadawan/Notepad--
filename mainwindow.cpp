@@ -112,7 +112,7 @@ void MainWindow::connectSignalsToSlotsForController()
 {
     // CONNECTION FOR UPDATING THE WINDOW TITLE AND COMBO-BOX DISPLAYING FILE TYPE
     connect(controller,&MainController::widgetChanged,this,[&] (QHash <QString,QString> titleAndFileType) {
-        setWindowTitle(titleAndFileType.value("title"));
+        setWindowTitle(titleAndFileType.value("fileName"));
 
         fileTypeComboBox->setCurrentText(titleAndFileType.value("fileType"));
     });
