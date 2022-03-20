@@ -28,10 +28,12 @@ public:
 private:
     Ui::MainWindow *ui;
     MainController *controller;
-    QComboBox *langsComboBox;
+    QComboBox *fileTypeComboBox;
     QLineEdit *pastebinLinkLineEdit;
 
     void connectSignalsToSlotsForMenuBar();
+    void connectSignalsToSlotsForTabWidget();
+    void connectSignalsToSlotsForController();
     bool isAnyTabModified();
 };
 #endif // MAINWINDOW_H

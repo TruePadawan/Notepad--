@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QHash>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -10,13 +11,15 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     setWindowIcon(QIcon(":/resources/notepad.ico"));
 
-    langsComboBox = new QComboBox{ui->statusBar};
+    fileTypeComboBox = new QComboBox{ui->statusBar};
     pastebinLinkLineEdit = new QLineEdit{ui->statusBar};
     controller = new MainController(this);
 
     setupStatusBarWidgets();
     setupStatusBar();
     connectSignalsToSlotsForMenuBar();
+    connectSignalsToSlotsForTabWidget();
+    connectSignalsToSlotsForController();
 }
 
 void MainWindow::setupStatusBarWidgets()
@@ -24,21 +27,21 @@ void MainWindow::setupStatusBarWidgets()
     pastebinLinkLineEdit->setReadOnly(true);
     pastebinLinkLineEdit->setMaximumWidth(150);
 
-    langsComboBox->addItem("Plain Text");
-    langsComboBox->addItem("C++");
-    langsComboBox->addItem("Qt/C++");
+    fileTypeComboBox->addItem("Plain Text");
+    fileTypeComboBox->addItem("C++");
 }
 
 void MainWindow::setupStatusBar()
 {
     ui->statusBar->addWidget(pastebinLinkLineEdit);
-    ui->statusBar->addPermanentWidget(langsComboBox);
+    ui->statusBar->addPermanentWidget(fileTypeComboBox);
 }
 
 void MainWindow::newTab(CustomTextEdit *widget) const
 {
     int tabIndex = ui->tabWidget->addTab(widget, widget->getFileName());
 
+    // SET THE TAB'S CURRENT INDEX TO THE NEWLY CREATED TAB EXCEPT WHEN ITS THE FIRST TAB IN THE PROGRAM
     if (ui->tabWidget->currentIndex() != tabIndex)
     {
         ui->tabWidget->setCurrentIndex(tabIndex);
@@ -46,13 +49,13 @@ void MainWindow::newTab(CustomTextEdit *widget) const
 
     // WHEN TEXT IN WIDGET'S TEXT-EDIT CHANGES, ADD AN INDICATOR TO THE TAB-BAR TITLE
     connect(widget,&CustomTextEdit::textChanged,this,[&] () {
-        int tabIndex = ui->tabWidget->currentIndex();
-        QString tabTitle = ui->tabWidget->tabText(tabIndex);
+        int currentTabIndex = ui->tabWidget->currentIndex();
+        QString tabTitle = ui->tabWidget->tabText(currentTabIndex);
 
         if (tabTitle[tabTitle.size()-1] != '*')
         {
             tabTitle.append("*");
-            ui->tabWidget->setTabText(tabIndex,tabTitle);
+            ui->tabWidget->setTabText(currentTabIndex,tabTitle);
         }
     });
 }
@@ -68,10 +71,6 @@ void MainWindow::openFile()
     }
 }
 
-MainWindow::~MainWindow()
-{
-    delete ui;
-}
 
 void MainWindow::connectSignalsToSlotsForMenuBar()
 {
@@ -95,8 +94,36 @@ void MainWindow::connectSignalsToSlotsForMenuBar()
     });
 }
 
+void MainWindow::connectSignalsToSlotsForTabWidget()
+{
+    connect(ui->tabWidget,&QTabWidget::currentChanged,this,[&] (int currentTabWidgetIndex) {
+        CustomTextEdit *actualWidget = qobject_cast<CustomTextEdit *>(ui->tabWidget->widget(currentTabWidgetIndex));
+        if (actualWidget != nullptr)
+        {
+            controller->setCurrentWidget(actualWidget);
+        }else
+        {
+            qFatal("Casting Tab Widget to CustomTextEdit Failed!!!!");
+        }
+    });
+}
+
+void MainWindow::connectSignalsToSlotsForController()
+{
+    // CONNECTION FOR UPDATING THE WINDOW TITLE AND COMBO-BOX DISPLAYING FILE TYPE
+    connect(controller,&MainController::widgetChanged,this,[&] (QHash <QString,QString> titleAndFileType) {
+        setWindowTitle(titleAndFileType.value("title"));
+
+        fileTypeComboBox->setCurrentText(titleAndFileType.value("fileType"));
+    });
+}
+
 bool MainWindow::isAnyTabModified()
 {
     return false;
 }
 
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
