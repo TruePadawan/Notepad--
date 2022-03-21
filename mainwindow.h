@@ -22,6 +22,7 @@ public:
 
     void newTab(CustomTextEdit *widget) const;
 
+    void newFile();
     void openFile();
     ~MainWindow();
 

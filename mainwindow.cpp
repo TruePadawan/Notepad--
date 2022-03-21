@@ -62,14 +62,20 @@ void MainWindow::newTab(CustomTextEdit *widget) const
     });
 }
 
+void MainWindow::newFile()
+{
+    CustomTextEdit *widget = controller->newWidget(ui->tabWidget);
+    newTab(widget);
+}
+
 void MainWindow::openFile()
 {
     QString filePath = QFileDialog::getOpenFileName(this,"Open",QDir::homePath(),"Text files (*.txt);;C++ files (*.h *.cpp)");
     if (!filePath.isNull())
     {
-        CustomTextEdit *tabWidget = controller->newWidget(filePath,ui->tabWidget);
+        CustomTextEdit *widget = controller->newWidget(filePath,ui->tabWidget);
 
-        newTab(tabWidget);
+        newTab(widget);
     }
 }
 
@@ -86,8 +92,8 @@ void MainWindow::connectSignalsToSlotsForMenuBar()
     });
 
     // FILE MENU
+    connect(ui->actionNew_File,&QAction::triggered,this,&MainWindow::newFile);
     connect(ui->actionOpen_File,&QAction::triggered,this,&MainWindow::openFile);
-
     connect(ui->actionExit, &QAction::triggered, this, [&] () {
        if (!this->isAnyTabModified())
        {
