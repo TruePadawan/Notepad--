@@ -53,8 +53,21 @@ QMenuBar::item:selected {
 }
 
 QTabBar::tab {
-	background-color: rgb(76, 76, 76);
-	color: rgb(234, 234, 234);
+	font-family: "Ubuntu";
+	border: 1px solid darkgray;
+	background-color: #212224;
+	color: darkgray;
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+	padding: 2px 5px;
+}
+
+QTabBar::tab:selected {
+	color: white;
+}
+
+QTabBar::tab:!selected {
+	margin-top: 2px;
 }
 
 .QStatusBar > .QComboBox {
