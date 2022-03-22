@@ -49,19 +49,19 @@ void CustomTextEdit::setFileNameAndPath(const QString &name, const QString &path
     filePath = path;
 }
 
-void CustomTextEdit::save()
+bool CustomTextEdit::save()
 {
     QFile file{filePath};
     if (!file.exists())
     {
-        saveAs();
+        return saveAs();
     }
     else
     {
         if (!file.open(QFile::WriteOnly))
         {
             qWarning() << "Error while saving : " << file.errorString();
-            return;
+            return false;
         }
 
         QTextStream writeTextToFile{&file};
@@ -71,20 +71,19 @@ void CustomTextEdit::save()
 
         file.close();
     }
+    return true;
 }
 
-void CustomTextEdit::saveAs()
+bool CustomTextEdit::saveAs()
 {
-    QString savename = QFileDialog::getSaveFileName(nullptr,tr("Save File As"),QString(),tr("Text File (*.txt);;C++ Files (*.cpp *.h)"));
+    QString savename = QFileDialog::getSaveFileName(this,tr("Save File As"),QString(),tr("Text File (*.txt);;C++ Files (*.cpp *.h)"));
     if (!savename.isNull())
     {
-        qDebug() << savename;
-
         QFile file{savename};
         if (!file.open(QIODevice::WriteOnly))
         {
             qWarning() << file.errorString();
-            return;
+            return false;
         }
 
         QTextStream writeTextToFile{&file};
@@ -96,13 +95,15 @@ void CustomTextEdit::saveAs()
         setFileType(info.suffix());
 
         file.close();
+
+        return true;
     }
+    return false;
 }
 
 void CustomTextEdit::setIsTextEditDataSaved(bool state)
 {
     isTextEditDataSaved = state;
-    emit textEditDataSaved(state);
 }
 
 
@@ -119,8 +120,6 @@ void CustomTextEdit::setFileType(const QString &fileExtension)
         fileType = "txt";
         setPreferredSyntax("Plain Text");
     }
-
-    emit fileTypeChanged(fileType);
 }
 
 void CustomTextEdit::setPreferredSyntax(const QString &syntax)

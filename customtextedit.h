@@ -15,8 +15,8 @@ public:
     CustomTextEdit(QFile &file, QWidget *parent);
 
     void loadTextFromFile(QFile &file);
-    void save();
-    void saveAs();
+    bool save();
+    bool saveAs();
     void configureTextEdit();
 
     void setFileNameAndPath(const QString &name, const QString &path = QString());
@@ -38,10 +38,6 @@ private:
     QString preferredSyntax;
     bool isTextEditDataSaved{true};
     Highlighter highlighterObject;
-
-signals:
-    void textEditDataSaved(bool saved);
-    void fileTypeChanged(QString fileType);
 };
 
 #endif // CUSTOMTEXTEDIT_H
