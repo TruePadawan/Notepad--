@@ -79,6 +79,35 @@ void MainWindow::openFile()
     }
 }
 
+void MainWindow::saveFile()
+{
+    controller->save();
+}
+
+void MainWindow::saveFileAs()
+{
+    controller->saveAs();
+}
+
+void MainWindow::quitProgram()
+{
+    if (!this->isAnyTabModified())
+    {
+        qApp->quit();
+    }
+}
+
+void MainWindow::sendCurrentTabToController(int indexOfCurrentTab)
+{
+    CustomTextEdit *actualWidget = qobject_cast<CustomTextEdit *>(ui->tabWidget->widget(indexOfCurrentTab));
+    if (actualWidget != nullptr)
+    {
+        controller->setCurrentWidget(actualWidget);
+    }else
+    {
+        qFatal("Casting Tab Widget to CustomTextEdit Failed!!!!");
+    }
+}
 
 void MainWindow::connectSignalsToSlotsForMenuBar()
 {
@@ -87,19 +116,18 @@ void MainWindow::connectSignalsToSlotsForMenuBar()
        QMessageBox::aboutQt(this);
     });
 
-    connect(ui->actionAbout, &QAction::triggered, this, [&] () {
+    connect(ui->actionAbout, &QAction::triggered, this,[&] () {
         QMessageBox::about(this,"About Notepad--","<p>A simple text editor</p>");
     });
 
     // FILE MENU
     connect(ui->actionNew_File,&QAction::triggered,this,&MainWindow::newFile);
     connect(ui->actionOpen_File,&QAction::triggered,this,&MainWindow::openFile);
-    connect(ui->actionExit, &QAction::triggered, this, [&] () {
-       if (!this->isAnyTabModified())
-       {
-           qApp->quit();
-       }
-    });
+
+    connect(ui->actionSave,&QAction::triggered,this,&MainWindow::saveFile);
+    connect(ui->actionSave_As,&QAction::triggered,this,&MainWindow::saveFileAs);
+
+    connect(ui->actionExit, &QAction::triggered, this, &MainWindow::quitProgram);
 }
 
 void MainWindow::connectSignalsToSlotsForTabWidget()
@@ -115,6 +143,11 @@ void MainWindow::connectSignalsToSlotsForController()
 
         syntaxComboBox->setCurrentText(titleAndPrefferedSyntax.value("syntax"));
     });
+
+    // CONNECTION FOR UPDATING THE TAB TITLE AND WINDOW TITLE WHEN FILE IS SAVED
+    connect(controller, &MainController::widgetTextSaved,this,&MainWindow::saved);
+
+    connect(controller, &MainController::widgetTextSavedAs,this,&MainWindow::savedAs);
 }
 
 void MainWindow::connectSignalsToSlotsForComboBox()
@@ -124,21 +157,33 @@ void MainWindow::connectSignalsToSlotsForComboBox()
     });
 }
 
+void MainWindow::saved(bool saved, QString fileName)
+{
+    if (saved)
+    {
+        int currentTabIndex = ui->tabWidget->currentIndex();
+        QString newWindowTitle{QString("Notepad-- (%1)").arg(fileName)};
+
+        ui->tabWidget->setTabText(currentTabIndex,fileName);
+        setWindowTitle(newWindowTitle);
+    }
+}
+
+void MainWindow::savedAs(bool saved, QString fileName)
+{
+    if (saved)
+    {
+        int currentTabIndex = ui->tabWidget->currentIndex();
+        QString newWindowTitle{QString("Notepad-- (%1)").arg(fileName)};
+
+        ui->tabWidget->setTabText(currentTabIndex,fileName);
+        setWindowTitle(newWindowTitle);
+    }
+}
+
 bool MainWindow::isAnyTabModified()
 {
     return false;
-}
-
-void MainWindow::sendCurrentTabToController(int indexOfCurrentTab)
-{
-    CustomTextEdit *actualWidget = qobject_cast<CustomTextEdit *>(ui->tabWidget->widget(indexOfCurrentTab));
-    if (actualWidget != nullptr)
-    {
-        controller->setCurrentWidget(actualWidget);
-    }else
-    {
-        qFatal("Casting Tab Widget to CustomTextEdit Failed!!!!");
-    }
 }
 
 MainWindow::~MainWindow()

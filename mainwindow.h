@@ -24,6 +24,11 @@ public:
 
     void newFile();
     void openFile();
+
+    void saveFile();
+    void saveFileAs();
+
+    void quitProgram();
     ~MainWindow();
 
 private:
@@ -38,6 +43,9 @@ private:
     void connectSignalsToSlotsForTabWidget();
     void connectSignalsToSlotsForController();
     void connectSignalsToSlotsForComboBox();
+
+    void saved(bool saved, QString fileName);
+    void savedAs(bool saved, QString fileName);
 
     bool isAnyTabModified();
 };
