@@ -53,7 +53,7 @@ QMenuBar::item:selected {
 }
 
 QTabBar::tab {
-	font-family: "Ubuntu";
+	font-family: "Ubuntu",sans-serif;
 	border: 1px solid darkgray;
 	background-color: #212224;
 	color: darkgray;
