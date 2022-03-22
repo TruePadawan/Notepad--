@@ -22,12 +22,14 @@ CustomTextEdit *MainController::newWidget(QString &filePath, QWidget *parent)
 
 void MainController::save()
 {
-    widget->save();
+    bool wasSaveSuccessfull = widget->save();
+    emit widgetTextSaved(wasSaveSuccessfull, widget->getFileName());
 }
 
 void MainController::saveAs()
 {
-    widget->saveAs();
+    bool wasSaveSuccessfull = widget->saveAs();
+    emit widgetTextSavedAs(wasSaveSuccessfull, widget->getFileName());
 }
 
 void MainController::setCurrentWidget(CustomTextEdit *_widget)

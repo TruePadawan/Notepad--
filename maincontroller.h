@@ -28,6 +28,8 @@ private:
 signals:
     void widgetChanged(QHash<QString,QString>);
     void widgetTextChanged(bool isModified);
+    void widgetTextSaved(bool saved, QString fileName);
+    void widgetTextSavedAs(bool saved, QString fileName);
 
 };
 
