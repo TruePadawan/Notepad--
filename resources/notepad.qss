@@ -59,7 +59,13 @@ QTabBar::tab {
 	color: darkgray;
 	border-top-left-radius: 4px;
 	border-top-right-radius: 4px;
-	padding: 2px 5px;
+	padding: 2px 8px;
+	width: 100px;
+}
+
+QTabBar::close-button {
+	padding-left: 3px;
+	padding-right: 3px;
 }
 
 QTabBar::tab:selected {
