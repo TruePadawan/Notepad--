@@ -89,6 +89,12 @@ void MainWindow::saveFileAs()
     controller->saveAs();
 }
 
+void MainWindow::closeFile(int indexOfTab)
+{
+    ui->tabWidget->removeTab(indexOfTab);
+    qDebug() << "Closing File at index - " << indexOfTab;
+}
+
 void MainWindow::quitProgram()
 {
     if (!this->isAnyTabModified())
@@ -99,14 +105,19 @@ void MainWindow::quitProgram()
 
 void MainWindow::sendCurrentTabToController(int indexOfCurrentTab)
 {
-    CustomTextEdit *actualWidget = qobject_cast<CustomTextEdit *>(ui->tabWidget->widget(indexOfCurrentTab));
-    if (actualWidget != nullptr)
+    if (indexOfCurrentTab != -1)
     {
-        controller->setCurrentWidget(actualWidget);
-    }else
-    {
-        qFatal("Casting Tab Widget to CustomTextEdit Failed!!!!");
+        CustomTextEdit *actualWidget = qobject_cast<CustomTextEdit *>(ui->tabWidget->widget(indexOfCurrentTab));
+        if (actualWidget != nullptr)
+        {
+            controller->setCurrentWidget(actualWidget);
+        }else
+        {
+            qFatal("Casting Tab Widget to CustomTextEdit Failed!!!!");
+        }
+        return;
     }
+    controller->setWidgetToNull(); // IF THERE IS NO WIDGET IN TABWIDGET
 }
 
 void MainWindow::connectSignalsToSlotsForMenuBar()
@@ -127,6 +138,10 @@ void MainWindow::connectSignalsToSlotsForMenuBar()
     connect(ui->actionSave,&QAction::triggered,this,&MainWindow::saveFile);
     connect(ui->actionSave_As,&QAction::triggered,this,&MainWindow::saveFileAs);
 
+    connect(ui->actionClose_File,&QAction::triggered, this, [&] () {
+        int indexOfCurrentTab = ui->tabWidget->currentIndex();
+        closeFile(indexOfCurrentTab);
+    });
     connect(ui->actionExit, &QAction::triggered, this, &MainWindow::quitProgram);
 }
 
