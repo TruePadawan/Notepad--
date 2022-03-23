@@ -14,10 +14,14 @@ public:
     explicit MainController(QObject *parent=nullptr);
     CustomTextEdit *newWidget(QWidget *parent=nullptr);
     CustomTextEdit *newWidget(QString &filePath, QWidget *parent=nullptr);
+
     void save();
     void saveAs();
+
     void setCurrentWidget(CustomTextEdit *_widget);
     void updatePreferredSyntaxForTab(const QString syntaxType);
+
+    void setWidgetToNull();
     ~MainController();
 
 private:

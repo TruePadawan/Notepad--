@@ -3,7 +3,7 @@
 MainController::MainController(QObject *parent)
     : QObject{parent}
 {
-    qDebug() << "Main Controller created!";
+    widget = nullptr;
 }
 
 CustomTextEdit *MainController::newWidget(QWidget *parent)
@@ -46,6 +46,11 @@ void MainController::setCurrentWidget(CustomTextEdit *_widget)
 void MainController::updatePreferredSyntaxForTab(const QString syntaxType)
 {
     widget->setPreferredSyntax(syntaxType);
+}
+
+void MainController::setWidgetToNull()
+{
+    this->widget = nullptr;
 }
 
 QHash<QString, QString> MainController::getNameAndPreferredSyntax(CustomTextEdit *_widget)
