@@ -138,16 +138,18 @@ void MainWindow::connectSignalsToSlotsForMenuBar()
     connect(ui->actionSave,&QAction::triggered,this,&MainWindow::saveFile);
     connect(ui->actionSave_As,&QAction::triggered,this,&MainWindow::saveFileAs);
 
-    connect(ui->actionClose_File,&QAction::triggered, this, [&] () {
+    connect(ui->actionClose_File,&QAction::triggered,this, [&] () {
         int indexOfCurrentTab = ui->tabWidget->currentIndex();
         closeFile(indexOfCurrentTab);
     });
-    connect(ui->actionExit, &QAction::triggered, this, &MainWindow::quitProgram);
+    connect(ui->actionExit, &QAction::triggered,this, &MainWindow::quitProgram);
 }
 
 void MainWindow::connectSignalsToSlotsForTabWidget()
 {
     connect(ui->tabWidget,&QTabWidget::currentChanged,this,&MainWindow::sendCurrentTabToController);
+
+    connect(ui->tabWidget, &QTabWidget::tabCloseRequested,this,&MainWindow::closeFile);
 }
 
 void MainWindow::connectSignalsToSlotsForController()
