@@ -3,6 +3,8 @@
 MainController::MainController(QObject *parent)
     : QObject{parent}
 {
+    qDebug() << "Creating Controller";
+
     widget = nullptr;
 }
 
