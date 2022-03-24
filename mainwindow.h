@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QComboBox>
 #include <QLineEdit>
+#include <QFileSystemModel>
 #include "maincontroller.h"
 #include "customtextedit.h"
 
@@ -19,11 +20,13 @@ public:
     MainWindow(QWidget *parent = nullptr);
     void setupStatusBarWidgets();
     void setupStatusBar();
+    void setupSideBar();
 
     void newTab(CustomTextEdit *widget) const;
 
     void newFile();
     void openFile();
+    void openFolder();
 
     void saveFile();
     void saveFileAs();
@@ -37,6 +40,10 @@ private:
     MainController *controller;
     QComboBox *syntaxComboBox;
     QLineEdit *pastebinLinkLineEdit;
+    QStringList nameFilters;
+    QFileSystemModel *filesystemModel;
+
+    void toggleActionsMenuActionsAndComboBox();
 
     void sendCurrentTabToController(int indexOfCurrentTab);
 
@@ -46,7 +53,6 @@ private:
     void connectSignalsToSlotsForComboBox();
 
     void saved(bool saved, QString fileName);
-    void savedAs(bool saved, QString fileName);
 
     bool isAnyTabModified();
 };
