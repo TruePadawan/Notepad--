@@ -76,6 +76,10 @@ QTabBar::tab:!selected {
 	margin-top: 2px;
 }
 
+.QStatusBar > .QComboBox:disabled {
+	color: rgb(21, 21, 21);	
+}
+
 .QStatusBar > .QComboBox {
 	background-color: rgb(21, 21, 21);
 	color: lightgrey;
