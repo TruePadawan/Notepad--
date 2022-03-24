@@ -27,13 +27,13 @@ public:
 private:
     CustomTextEdit *widget;
     bool isCurrentWidgetDataSaved{true};
-    QHash<QString,QString> getNameAndPreferredSyntax(CustomTextEdit *_widget);
+    QHash<QString,QString> getNameAndPreferredSyntax(CustomTextEdit *_widget = nullptr);
 
 signals:
-    void widgetChanged(QHash<QString,QString>);
+    void widgetChanged(QHash<QString,QString> fileNameAndPrefferedSyntax);
     void widgetTextChanged(bool isModified);
-    void widgetTextSaved(bool saved, QString fileName);
-    void widgetTextSavedAs(bool saved, QString fileName);
+    void widgetTextSaved(bool isSaved, QString fileName);
+    void widgetTextSavedAs(bool isSaved, QString fileName);
 
 };
 

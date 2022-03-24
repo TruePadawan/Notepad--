@@ -198,7 +198,10 @@ void MainWindow::connectSignalsToSlotsForController()
     connect(controller,&MainController::widgetChanged,this,[&] (QHash <QString,QString> titleAndPrefferedSyntax) {
         setWindowTitle(titleAndPrefferedSyntax.value("fileName"));
 
-        syntaxComboBox->setCurrentText(titleAndPrefferedSyntax.value("syntax"));
+        if (titleAndPrefferedSyntax.contains("syntax"))
+        {
+            syntaxComboBox->setCurrentText(titleAndPrefferedSyntax.value("syntax"));
+        }
     });
 
     // CONNECTION FOR UPDATING THE TAB TITLE AND WINDOW TITLE WHEN FILE IS SAVED

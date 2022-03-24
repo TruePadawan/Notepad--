@@ -4,7 +4,6 @@ MainController::MainController(QObject *parent)
     : QObject{parent}
 {
     qDebug() << "Creating Controller";
-
     widget = nullptr;
 }
 
@@ -53,10 +52,19 @@ void MainController::updatePreferredSyntaxForTab(const QString syntaxType)
 void MainController::setWidgetToNull()
 {
     this->widget = nullptr;
+
+    emit widgetChanged(getNameAndPreferredSyntax());
 }
 
 QHash<QString, QString> MainController::getNameAndPreferredSyntax(CustomTextEdit *_widget)
 {
+    if (_widget == nullptr)
+    {
+        QHash <QString,QString> defaultValue;
+        defaultValue["fileName"] = "Notepad--";
+        return defaultValue;
+    }
+
     QString nameOfFileInCurrentTab = _widget->getFileName();
 
     QString newWindowTitle{QString("Notepad-- (%1)").arg(nameOfFileInCurrentTab)};
