@@ -22,7 +22,7 @@ public:
     void setupStatusBar();
     void setupSideBar();
 
-    void newTab(CustomTextEdit *widget) const;
+    void newTab(CustomTextEdit *widget);
 
     void newFile();
     void openFile();
@@ -43,7 +43,10 @@ private:
     QStringList nameFilters;
     QFileSystemModel *filesystemModel;
 
+    void _init();
     void toggleActionsMenuActionsAndComboBox();
+    void toggleSideBar();
+    void toggleZenMode();
 
     void sendCurrentTabToController(int indexOfCurrentTab);
 

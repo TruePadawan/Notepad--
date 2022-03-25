@@ -9,11 +9,18 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    _init();
+}
+
+void MainWindow::_init()
+{
     setWindowIcon(QIcon(":/resources/notepad.ico"));
 
     syntaxComboBox = new QComboBox{ui->statusBar};
     pastebinLinkLineEdit = new QLineEdit{ui->statusBar};
     controller = new MainController(this);
+
     nameFilters << "*.h" << "*.cpp" << "*.txt";
 
     setupStatusBarWidgets();
@@ -51,17 +58,17 @@ void MainWindow::setupSideBar()
     filesystemModel->setNameFilters(nameFilters);
     filesystemModel->setNameFilterDisables(false);
 
-    ui->treeView->setModel(filesystemModel);
+    ui->sideBar->setModel(filesystemModel);
 
-    ui->treeView->setRootIndex(filesystemModel->setRootPath(QDir::currentPath()));
+    ui->sideBar->setRootIndex(filesystemModel->setRootPath(QDir::currentPath()));
 
     for (int i = 1; i <= 3; i++)
     {
-        ui->treeView->hideColumn(i);
+        ui->sideBar->hideColumn(i);
     }
 }
 
-void MainWindow::newTab(CustomTextEdit *widget) const
+void MainWindow::newTab(CustomTextEdit *widget)
 {
     int tabIndex = ui->tabWidget->addTab(widget, widget->getFileName());
 
@@ -82,15 +89,15 @@ void MainWindow::newTab(CustomTextEdit *widget) const
             ui->tabWidget->setTabText(currentTabIndex,tabTitle);
         }
     });
+
+    // CHECK IF MENU ACTIONS SHOULD BE ENABLED
+    toggleActionsMenuActionsAndComboBox();
 }
 
 void MainWindow::newFile()
 {
     CustomTextEdit *widget = controller->newWidget(ui->tabWidget);
     newTab(widget);
-
-    // CHECK IF MENU ACTIONS SHOULD BE ENABLED
-    toggleActionsMenuActionsAndComboBox();
 }
 
 void MainWindow::openFile()
@@ -110,7 +117,7 @@ void MainWindow::openFolder()
 
     if (!folderPath.isEmpty())
     {
-        ui->treeView->setRootIndex(filesystemModel->setRootPath(folderPath));
+        ui->sideBar->setRootIndex(filesystemModel->setRootPath(folderPath));
     }
 }
 
@@ -145,6 +152,7 @@ void MainWindow::sendCurrentTabToController(int indexOfCurrentTab)
     if (indexOfCurrentTab != -1)
     {
         CustomTextEdit *actualWidget = qobject_cast<CustomTextEdit *>(ui->tabWidget->widget(indexOfCurrentTab));
+
         if (actualWidget != nullptr)
         {
             controller->setCurrentWidget(actualWidget);
@@ -183,6 +191,12 @@ void MainWindow::connectSignalsToSlotsForMenuBar()
     });
 
     connect(ui->actionExit, &QAction::triggered,this, &MainWindow::quitProgram);
+
+    // EDIT MENU
+
+    // VIEW MENU
+    connect(ui->actionToggle_SideBar,&QAction::triggered,this, &MainWindow::toggleSideBar);
+    connect(ui->actionToggle_Zen_Mode,&QAction::triggered,this, &MainWindow::toggleZenMode);
 }
 
 void MainWindow::connectSignalsToSlotsForTabWidget()
@@ -244,6 +258,11 @@ void MainWindow::toggleActionsMenuActionsAndComboBox()
         ui->actionSave_As->setEnabled(false);
         ui->actionClose_File->setEnabled(false);
 
+        ui->actionCopy->setEnabled(false);
+        ui->actionCut->setEnabled(false);
+        ui->actionPaste->setEnabled(false);
+        ui->actionSelect_All->setEnabled(false);
+
         syntaxComboBox->setEnabled(false);
     }
     else if (numberOfTabs > 0 && !ui->actionSave->isEnabled())
@@ -252,7 +271,29 @@ void MainWindow::toggleActionsMenuActionsAndComboBox()
         ui->actionSave_As->setEnabled(true);
         ui->actionClose_File->setEnabled(true);
 
+        ui->actionCopy->setEnabled(true);
+        ui->actionCut->setEnabled(true);
+        ui->actionPaste->setEnabled(true);
+        ui->actionSelect_All->setEnabled(true);
+
         syntaxComboBox->setEnabled(true);
+    }
+}
+
+void MainWindow::toggleSideBar()
+{
+    bool isSideBarVisible = ui->sideBar->isVisible();
+    ui->sideBar->setVisible(!isSideBarVisible);
+}
+
+void MainWindow::toggleZenMode()
+{
+    if (this->windowState() == Qt::WindowFullScreen)
+    {
+        this->showMaximized();
+    }else
+    {
+        this->showFullScreen();
     }
 }
 
