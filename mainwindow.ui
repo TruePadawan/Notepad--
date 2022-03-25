@@ -38,7 +38,7 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QTreeView" name="treeView">
+       <widget class="QTreeView" name="sideBar">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
           <horstretch>0</horstretch>
@@ -160,8 +160,8 @@
     <property name="title">
      <string>View</string>
     </property>
-    <addaction name="actionEnter_Distraction_Free_Mode"/>
-    <addaction name="actionShow_Folder_View"/>
+    <addaction name="actionToggle_Zen_Mode"/>
+    <addaction name="actionToggle_SideBar"/>
    </widget>
    <widget class="QMenu" name="menuFormat">
     <property name="title">
@@ -317,9 +317,12 @@
     <string>Ctrl+A</string>
    </property>
   </action>
-  <action name="actionEnter_Distraction_Free_Mode">
+  <action name="actionToggle_Zen_Mode">
    <property name="text">
-    <string>Enter Distraction Free Mode</string>
+    <string>Toggle Zen Mode</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggle Zen Mode</string>
    </property>
   </action>
   <action name="actionFont">
@@ -327,9 +330,12 @@
     <string>Font</string>
    </property>
   </action>
-  <action name="actionShow_Folder_View">
+  <action name="actionToggle_SideBar">
    <property name="text">
-    <string>Show Folder View</string>
+    <string>Toggle Sidebar</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggle Sidebar</string>
    </property>
   </action>
   <action name="actionOpen_Folder">
