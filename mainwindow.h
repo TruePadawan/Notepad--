@@ -26,6 +26,7 @@ public:
 
     void newFile();
     void openFile();
+    void openFileFromSidebar();
     void openFolder();
 
     void saveFile();
@@ -44,6 +45,9 @@ private:
     QFileSystemModel *filesystemModel;
 
     void _init();
+
+    int isFileAlreadyOpen(QString filePath);
+
     void toggleActionsMenuActionsAndComboBox();
     void toggleSideBar();
     void toggleZenMode();
@@ -54,6 +58,7 @@ private:
     void connectSignalsToSlotsForTabWidget();
     void connectSignalsToSlotsForController();
     void connectSignalsToSlotsForComboBox();
+    void connectSignalsToSlotsForSidebar();
 
     void saved(bool saved, QString fileName);
 

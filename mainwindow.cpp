@@ -3,6 +3,7 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QHash>
+#include <QModelIndex>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -31,6 +32,26 @@ void MainWindow::_init()
     connectSignalsToSlotsForTabWidget();
     connectSignalsToSlotsForController();
     connectSignalsToSlotsForComboBox();
+    connectSignalsToSlotsForSidebar();
+}
+
+int MainWindow::isFileAlreadyOpen(QString filePath)
+{
+    const int NUMBER_OF_TABS = ui->tabWidget->count();
+
+    if (NUMBER_OF_TABS == 0) return -1;
+
+    for (int i = 0; i < NUMBER_OF_TABS; ++i)
+    {
+        CustomTextEdit *widget = qobject_cast<CustomTextEdit *>(ui->tabWidget->widget(i));
+        QString pathOfFileInWidget = widget->getFilePath();
+
+        if (filePath == pathOfFileInWidget)
+        {
+            return i;
+        }
+    }
+    return -1;
 }
 
 void MainWindow::setupStatusBarWidgets()
@@ -66,6 +87,8 @@ void MainWindow::setupSideBar()
     {
         ui->sideBar->hideColumn(i);
     }
+
+
 }
 
 void MainWindow::newTab(CustomTextEdit *widget)
@@ -108,6 +131,29 @@ void MainWindow::openFile()
         CustomTextEdit *widget = controller->newWidget(filePath,ui->tabWidget);
 
         newTab(widget);
+    }
+}
+
+void MainWindow::openFileFromSidebar()
+{
+    const QModelIndex indexOfSelectedItem = ui->sideBar->selectionModel()->currentIndex();
+
+   // CHECK IF THE CURRENTLY SELECTED ITEM IS A DIRECTORY (IT NEEDS TO BE A FILE)
+    if (indexOfSelectedItem.isValid() && !filesystemModel->isDir(indexOfSelectedItem))
+    {
+        QString pathOfSelectedFile = filesystemModel->filePath(indexOfSelectedItem);
+
+        const int indexOfPossiblyOpenedFile = isFileAlreadyOpen(pathOfSelectedFile);
+
+        if (indexOfPossiblyOpenedFile == -1)
+        {
+            CustomTextEdit *widget = controller->newWidget(pathOfSelectedFile,ui->tabWidget);
+            newTab(widget);
+
+            return;
+        }
+        // SET THE TAB TO THAT INDEX SINCE THE FILE IS ALREADY OPENED
+        ui->tabWidget->setCurrentIndex(indexOfPossiblyOpenedFile);
     }
 }
 
@@ -229,6 +275,11 @@ void MainWindow::connectSignalsToSlotsForComboBox()
     connect(syntaxComboBox,&QComboBox::currentTextChanged,this,[&] (QString currentText) {
         controller->updatePreferredSyntaxForTab(currentText);
     });
+}
+
+void MainWindow::connectSignalsToSlotsForSidebar()
+{
+    connect(ui->sideBar->selectionModel(),&QItemSelectionModel::currentChanged,this,&MainWindow::openFileFromSidebar);
 }
 
 void MainWindow::saved(bool saved, QString fileName)
