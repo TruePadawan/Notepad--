@@ -5,6 +5,8 @@
 CustomTextEdit::CustomTextEdit(QWidget *parent): QTextEdit{parent}
 {
     setFileNameAndPath("Untitled");
+    setPreferredSyntax("Plain Text");
+
     configureTextEdit();
 }
 
