@@ -18,6 +18,14 @@ public:
     void save();
     void saveAs();
 
+    void undo();
+    void redo();
+
+    void copy();
+    void cut();
+    void paste();
+    void selectAll();
+
     void setCurrentWidget(CustomTextEdit *_widget);
     void updatePreferredSyntaxForTab(const QString syntaxType);
 

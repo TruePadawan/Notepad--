@@ -33,6 +33,36 @@ void MainController::saveAs()
     emit widgetTextSavedAs(wasSaveSuccessfull, widget->getFileName());
 }
 
+void MainController::undo()
+{
+    widget->undo();
+}
+
+void MainController::redo()
+{
+    widget->redo();
+}
+
+void MainController::copy()
+{
+    widget->copy();
+}
+
+void MainController::cut()
+{
+    widget->cut();
+}
+
+void MainController::paste()
+{
+    widget->paste();
+}
+
+void MainController::selectAll()
+{
+    widget->selectAll();
+}
+
 void MainController::setCurrentWidget(CustomTextEdit *_widget)
 {
     if (this->widget != _widget)

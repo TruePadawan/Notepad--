@@ -245,6 +245,13 @@ void MainWindow::connectSignalsToSlotsForMenuBar()
     connect(ui->actionExit, &QAction::triggered,this, &MainWindow::quitProgram);
 
     // EDIT MENU
+    connect(ui->actionUndo, &QAction::triggered,controller, &MainController::undo);
+    connect(ui->actionRedo, &QAction::triggered,controller, &MainController::redo);
+
+    connect(ui->actionCopy, &QAction::triggered,controller, &MainController::copy);
+    connect(ui->actionCut, &QAction::triggered,controller, &MainController::cut);
+    connect(ui->actionPaste, &QAction::triggered,controller, &MainController::paste);
+    connect(ui->actionSelect_All, &QAction::triggered,controller, &MainController::selectAll);
 
     // VIEW MENU
     connect(ui->actionToggle_SideBar,&QAction::triggered,this, &MainWindow::toggleSideBar);
@@ -315,6 +322,9 @@ void MainWindow::toggleActionsMenuActionsAndComboBox()
         ui->actionSave_As->setEnabled(false);
         ui->actionClose_File->setEnabled(false);
 
+        ui->actionUndo->setEnabled(false);
+        ui->actionRedo->setEnabled(false);
+
         ui->actionCopy->setEnabled(false);
         ui->actionCut->setEnabled(false);
         ui->actionPaste->setEnabled(false);
@@ -327,6 +337,9 @@ void MainWindow::toggleActionsMenuActionsAndComboBox()
         ui->actionSave->setEnabled(true);
         ui->actionSave_As->setEnabled(true);
         ui->actionClose_File->setEnabled(true);
+
+        ui->actionUndo->setEnabled(true);
+        ui->actionRedo->setEnabled(true);
 
         ui->actionCopy->setEnabled(true);
         ui->actionCut->setEnabled(true);

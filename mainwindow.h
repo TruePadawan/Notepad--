@@ -33,6 +33,7 @@ public:
     void saveFileAs();
 
     void closeFile(int indexOfTab);
+
     void quitProgram();
     ~MainWindow();
 
