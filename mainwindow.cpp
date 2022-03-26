@@ -12,6 +12,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     _init();
+
+    newFile();
 }
 
 void MainWindow::_init()
@@ -179,6 +181,10 @@ void MainWindow::saveFileAs()
 
 void MainWindow::closeFile(int indexOfTab)
 {
+    if (ui->tabWidget->count() == 1)
+    {
+        quitProgram();
+    }
     ui->tabWidget->removeTab(indexOfTab);
 
     // CHECK IF MENU ACTIONS SHOULD BE ENABLED
