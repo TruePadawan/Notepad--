@@ -31,6 +31,8 @@ void MainWindow::_init()
     pastebinLinkLineEdit = new QLineEdit{ui->statusBar};
     controller = new MainController(this);
 
+    pastebin.setParent(this);
+
     nameFilters << "*.h" << "*.cpp" << "*.txt";
 
     setupStatusBarWidgets();
@@ -42,6 +44,7 @@ void MainWindow::_init()
     connectSignalsToSlotsForController();
     connectSignalsToSlotsForComboBox();
     connectSignalsToSlotsForSidebar();
+    connectSignalsToSlotsForPastebin();
 }
 
 int MainWindow::isFileAlreadyOpen(QString filePath)
@@ -76,6 +79,7 @@ void MainWindow::setupStatusBarWidgets()
 
 void MainWindow::setupStatusBar()
 {
+    pastebinLinkLineEdit->setFixedWidth(200);
     ui->statusBar->addWidget(pastebinLinkLineEdit);
     ui->statusBar->addPermanentWidget(syntaxComboBox);
 }
@@ -271,6 +275,11 @@ void MainWindow::connectSignalsToSlotsForMenuBar()
     // FORMAT MENU
     connect(ui->actionFont, &QAction::triggered,this, &MainWindow::setFontForWidget);
 
+    //PLUGIN
+    connect(ui->actionPaste_to_Pastebin, &QAction::triggered,this, [&] {
+        pastebinDialog.showNormal();
+    });
+
     // VIEW MENU
     connect(ui->actionToggle_SideBar,&QAction::triggered,this, &MainWindow::toggleSideBar);
     connect(ui->actionToggle_Zen_Mode,&QAction::triggered,this, &MainWindow::toggleZenMode);
@@ -311,6 +320,25 @@ void MainWindow::connectSignalsToSlotsForComboBox()
 void MainWindow::connectSignalsToSlotsForSidebar()
 {
     connect(ui->sideBar->selectionModel(),&QItemSelectionModel::currentChanged,this,&MainWindow::openFileFromSidebar);
+}
+
+void MainWindow::connectSignalsToSlotsForPastebin()
+{
+    connect(&pastebin,&QPasteBin::complete,this, [&] (QString link) {
+        qDebug() << "Link " << link;
+        pastebinLinkLineEdit->setText(link);
+    });
+
+    connect(&pastebinDialog, &QDialog::accepted, this, [&] {
+        auto pasteInfo = pastebinDialog.getData();
+
+        QString pasteName = pasteInfo.value("paste_name");
+        QString pasteExposure = pasteInfo.value("paste_exposure");
+        QString format = pasteInfo.value("paste_format");
+
+        pastebin.setUpPasteData(controller->getText(),pasteName,pasteExposure,format);
+        pastebin.paste();
+    });
 }
 
 void MainWindow::saved(bool saved, QString fileName)

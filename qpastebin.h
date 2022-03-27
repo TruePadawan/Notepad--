@@ -14,7 +14,6 @@ class QPasteBin : public QObject
 {
     Q_OBJECT
 private:
-    enum PASTE_EXPOSURE {PUBLIC=0,UNLISTED=1,PRIVATE=2}; // ENUM REPRESENTING THE VISIBILITY OF THE PASTE
     QNetworkAccessManager *manager;
     QNetworkReply *replyForPastedCode;
     QNetworkReply *replyForApiRequest;
@@ -22,9 +21,11 @@ private:
 
     QString API_KEY;
     QString linkToPastedCode;
+
+    void completePaste();
 public:
     explicit QPasteBin(QObject *parent = nullptr);
-    bool setUpPasteData(QString code, QString pasteName="Untitled", PASTE_EXPOSURE visibility=PUBLIC);
+    void setUpPasteData(QString code, QString pasteName, QString visibility, QString format);
     void buildPasteLink();
     void buildApiKey();
     void requestApiKey();
@@ -34,7 +35,7 @@ public:
     ~QPasteBin();
 
 signals:
-    void complete();
+    void complete(QString);
 };
 
 #endif // QPASTEBIN_H

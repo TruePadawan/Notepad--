@@ -5,8 +5,10 @@
 #include <QComboBox>
 #include <QLineEdit>
 #include <QFileSystemModel>
+#include "qpastebindialog.h"
 #include "maincontroller.h"
 #include "customtextedit.h"
+#include "qpastebin.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -48,6 +50,8 @@ private:
     QLineEdit *pastebinLinkLineEdit;
     QStringList nameFilters;
     QFileSystemModel *filesystemModel;
+    QPastebinDialog pastebinDialog;
+    QPasteBin pastebin;
 
     void _init();
 
@@ -66,6 +70,7 @@ private:
     void connectSignalsToSlotsForController();
     void connectSignalsToSlotsForComboBox();
     void connectSignalsToSlotsForSidebar();
+    void connectSignalsToSlotsForPastebin();
 
     void saved(bool saved, QString fileName);
 
