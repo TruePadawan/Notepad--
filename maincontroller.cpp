@@ -27,6 +27,11 @@ CustomTextEdit *MainController::newWidget(QString &filePath, QWidget *parent)
     return widget;
 }
 
+QString MainController::getText()
+{
+    return widget->toPlainText();
+}
+
 void MainController::save()
 {
     bool wasSaveSuccessfull = widget->save();

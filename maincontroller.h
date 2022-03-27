@@ -15,6 +15,7 @@ public:
     explicit MainController(QObject *parent=nullptr);
     CustomTextEdit *newWidget(QWidget *parent=nullptr);
     CustomTextEdit *newWidget(QString &filePath, QWidget *parent=nullptr);
+    QString getText();
 
     void save();
     void saveAs();
