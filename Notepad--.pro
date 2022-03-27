@@ -14,17 +14,20 @@ SOURCES += \
     main.cpp \
     maincontroller.cpp \
     mainwindow.cpp \
-    qpastebin.cpp
+    qpastebin.cpp \
+    qpastebindialog.cpp
 
 HEADERS += \
     customtextedit.h \
     highlighter.h \
     maincontroller.h \
     mainwindow.h \
-    qpastebin.h
+    qpastebin.h \
+    qpastebindialog.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    qpastebindialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
