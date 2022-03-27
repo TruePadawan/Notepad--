@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QFontDialog>
 #include <QHash>
 #include <QModelIndex>
 
@@ -14,6 +15,12 @@ MainWindow::MainWindow(QWidget *parent)
     _init();
 
     newFile();
+}
+
+CustomTextEdit *MainWindow::convertWidgetToCustomTextEdit(QWidget *widget)
+{
+    CustomTextEdit *converted = qobject_cast<CustomTextEdit *>(widget);
+    return converted;
 }
 
 void MainWindow::_init()
@@ -45,7 +52,7 @@ int MainWindow::isFileAlreadyOpen(QString filePath)
 
     for (int i = 0; i < NUMBER_OF_TABS; ++i)
     {
-        CustomTextEdit *widget = qobject_cast<CustomTextEdit *>(ui->tabWidget->widget(i));
+        CustomTextEdit *widget = convertWidgetToCustomTextEdit(ui->tabWidget->widget(i));
         QString pathOfFileInWidget = widget->getFilePath();
 
         if (filePath == pathOfFileInWidget)
@@ -191,6 +198,14 @@ void MainWindow::closeFile(int indexOfTab)
     toggleActionsMenuActionsAndComboBox();
 }
 
+void MainWindow::setFontForWidget()
+{
+    QFont font = QFontDialog::getFont(nullptr,QFont{"Fira Code Medium"},this,"Select Font");
+    controller->setFont(font);
+
+    setFontToAllWidgets(font);
+}
+
 void MainWindow::quitProgram()
 {
     if (!this->isAnyTabModified())
@@ -203,7 +218,7 @@ void MainWindow::sendCurrentTabToController(int indexOfCurrentTab)
 {
     if (indexOfCurrentTab != -1)
     {
-        CustomTextEdit *actualWidget = qobject_cast<CustomTextEdit *>(ui->tabWidget->widget(indexOfCurrentTab));
+        CustomTextEdit *actualWidget = convertWidgetToCustomTextEdit(ui->tabWidget->widget(indexOfCurrentTab));
 
         if (actualWidget != nullptr)
         {
@@ -252,6 +267,9 @@ void MainWindow::connectSignalsToSlotsForMenuBar()
     connect(ui->actionCut, &QAction::triggered,controller, &MainController::cut);
     connect(ui->actionPaste, &QAction::triggered,controller, &MainController::paste);
     connect(ui->actionSelect_All, &QAction::triggered,controller, &MainController::selectAll);
+
+    // FORMAT MENU
+    connect(ui->actionFont, &QAction::triggered,this, &MainWindow::setFontForWidget);
 
     // VIEW MENU
     connect(ui->actionToggle_SideBar,&QAction::triggered,this, &MainWindow::toggleSideBar);
@@ -364,6 +382,16 @@ void MainWindow::toggleZenMode()
     }else
     {
         this->showFullScreen();
+    }
+}
+
+void MainWindow::setFontToAllWidgets(QFont &font)
+{
+    const int NUMBER_OF_WIDGETS = ui->tabWidget->count();
+
+    for (int i = 0; i < NUMBER_OF_WIDGETS; ++i)
+    {
+        ui->tabWidget->widget(i)->setFont(font);
     }
 }
 

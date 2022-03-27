@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QString>
 #include <QHash>
+#include <QFont>
 #include "customtextedit.h"
 
 class MainController : public QObject
@@ -29,12 +30,16 @@ public:
     void setCurrentWidget(CustomTextEdit *_widget);
     void updatePreferredSyntaxForTab(const QString syntaxType);
 
+    void setFont(QFont &newFont);
+
     void setWidgetToNull();
     ~MainController();
 
 private:
     CustomTextEdit *widget;
     bool isCurrentWidgetDataSaved{true};
+    QFont widgetFont;
+
     QHash<QString,QString> getNameAndPreferredSyntax(CustomTextEdit *_widget = nullptr);
 
 signals:

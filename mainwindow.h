@@ -18,6 +18,8 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
+    CustomTextEdit *convertWidgetToCustomTextEdit(QWidget *widget);
+
     void setupStatusBarWidgets();
     void setupStatusBar();
     void setupSideBar();
@@ -33,6 +35,8 @@ public:
     void saveFileAs();
 
     void closeFile(int indexOfTab);
+
+    void setFontForWidget();
 
     void quitProgram();
     ~MainWindow();
@@ -52,6 +56,8 @@ private:
     void toggleActionsMenuActionsAndComboBox();
     void toggleSideBar();
     void toggleZenMode();
+
+    void setFontToAllWidgets(QFont &font);
 
     void sendCurrentTabToController(int indexOfCurrentTab);
 

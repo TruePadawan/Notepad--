@@ -19,7 +19,6 @@ CustomTextEdit::CustomTextEdit(QFile &file, QWidget *parent) :QTextEdit{parent}
 
 void CustomTextEdit::configureTextEdit()
 {
-    this->setFont(QFont("Fira Code Medium"));
     this->setFontPointSize(10);
     this->setStyleSheet("background-color: rgb(42, 42, 42); color: white;");
 }

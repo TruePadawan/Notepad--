@@ -4,12 +4,16 @@ MainController::MainController(QObject *parent)
     : QObject{parent}
 {
     qDebug() << "Creating Controller";
+
     widget = nullptr;
+    widgetFont = QFont{"Fira Code Medium"};
 }
 
 CustomTextEdit *MainController::newWidget(QWidget *parent)
 {
     widget = new CustomTextEdit(parent);
+    widget->setFont(widgetFont);
+
     return widget;
 }
 
@@ -18,6 +22,8 @@ CustomTextEdit *MainController::newWidget(QString &filePath, QWidget *parent)
     QFile file{filePath};
 
     widget = new CustomTextEdit(file, parent);
+    widget->setFont(widgetFont);
+
     return widget;
 }
 
@@ -68,6 +74,11 @@ void MainController::setCurrentWidget(CustomTextEdit *_widget)
     if (this->widget != _widget)
     {
         this->widget = _widget;
+
+//        if (widget->font() != widgetFont)
+//        {
+//            widget->setFont(widgetFont);
+//        }
     }
 
     auto fileNameAndSyntax = getNameAndPreferredSyntax(_widget);
@@ -77,6 +88,14 @@ void MainController::setCurrentWidget(CustomTextEdit *_widget)
 void MainController::updatePreferredSyntaxForTab(const QString syntaxType)
 {
     widget->setPreferredSyntax(syntaxType);
+}
+
+void MainController::setFont(QFont &newFont)
+{
+    if (widgetFont != newFont)
+    {
+        widgetFont = newFont;
+    }
 }
 
 void MainController::setWidgetToNull()
