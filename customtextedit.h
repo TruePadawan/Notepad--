@@ -17,7 +17,7 @@ public:
     void loadTextFromFile(QFile &file);
     bool save();
     bool saveAs();
-    void configureTextEdit();
+    void _init();
 
     void setFileNameAndPath(const QString &name, const QString &path = QString());
     void setFileType(const QString &fileExtension);

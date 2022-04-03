@@ -7,18 +7,19 @@ CustomTextEdit::CustomTextEdit(QWidget *parent): QTextEdit{parent}
     setFileNameAndPath("Untitled");
     setPreferredSyntax("Plain Text");
 
-    configureTextEdit();
+    _init();
 }
 
 CustomTextEdit::CustomTextEdit(QFile &file, QWidget *parent) :QTextEdit{parent}
 {
-    configureTextEdit();
+    _init();
 
     loadTextFromFile(file);
 }
 
-void CustomTextEdit::configureTextEdit()
+void CustomTextEdit::_init()
 {
+    this->setAutoFormatting(QTextEdit::AutoAll);
     this->setFontPointSize(10);
     this->setStyleSheet("background-color: rgb(42, 42, 42); color: white;");
 }
