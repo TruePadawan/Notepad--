@@ -6,9 +6,6 @@
 <strong>A basic text-editor being built using Qt/C++</strong>
 ![image](https://user-images.githubusercontent.com/71678062/136006511-5c42e13d-1afe-4b6f-ba53-21ee1824de48.png)
 
-## Update
-* I plan to completely rewrite most of the application because it doesn't function properly and has poor design. For now I'm busy with web-development stuff.
-
 ## Notes
 <p>If you're building the program from source, you need to have OpenSSL installed on your computer, and it's bin directory in your Path(environment variables) or you can just add it scoped to the program itself if you don't want to put it directly into your system env variables</p>
 <strong>It needs access to two dll files; libcrypto-1x64.dll and libssl-1.dll</strong>
