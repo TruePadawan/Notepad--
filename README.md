@@ -1,4 +1,4 @@
-# Notepad-- (Abandoned)
+# Notepad--
 <i>I've stopped working on this project since I've moved into Web Development, twas fun</i>  
 
 <strong>A basic text-editor being built using Qt/C++</strong>
